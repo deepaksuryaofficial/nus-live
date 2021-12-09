@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Home</title>
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-uWxY/CJNBR+1zjPWmfnSnVxwRheevXITnMqoEIeG1LJrdI0GlVs/9cVSyPYXdcSF" crossorigin="anonymous">
+
+    
+<script>
+    
+window.onload = function () {
+
+var chart1 = new CanvasJS.Chart("chartContainer1", {
+	animationEnabled: true,
+	theme: "light2", // "light1", "light2", "dark1", "dark2"
+	title: {
+		text: "Net ROI vs Weeks"
+	},
+	axisY: {
+		title: "Net ROI (in $)",
+		suffix: "$"
+	},
+	axisX: {
+		title: "No. of weeks"
+	},
+	data: [{
+		type: "column",
+		yValueFormatString: "#,##0.0#\"$\"",
+		dataPoints: [
+			{ label: "Week 1 ROI Sum:", y: {{ sum_roi_week1 }} },	
+			{ label: "Week 2 ROI Sum:", y: {{ sum_roi_week2 }} },	
+			{ label: "Week 4 ROI Sum:", y: {{ sum_roi_week4 }} },
+			{ label: "Week 8 ROI Sum:", y: {{ sum_roi_week8 }}},	
+			{ label: "Week 12 ROI Sum:", y: {{ sum_roi_week12 }} },
+			{ label: "Week 24 ROI Sum:", y: {{ sum_roi_week24 }}}			
+		]
+	}]
+});
+
+
+var chart2 = new CanvasJS.Chart("chartContainer2", {
+	animationEnabled: true,
+	theme: "light2", // "light1", "light2", "dark1", "dark2"
+	title: {
+		text: "Net Profit in $ vs Weeks"
+	},
+	axisY: {
+		title: "Net Profit (in $)",
+		suffix: "$"
+	},
+	axisX: {
+		title: "No. of weeks"
+	},
+	data: [{
+		type: "column",
+		yValueFormatString: "#,##0.0#\"$\"",
+		dataPoints: [
+			{ label: "Week 1 ROI Sum:", y: {{ sum_profit_week1 }} },	
+			{ label: "Week 2 ROI Sum:", y: {{ sum_profit_week2 }} },	
+			{ label: "Week 4 ROI Sum:", y: {{ sum_profit_week4 }} },
+			{ label: "Week 8 ROI Sum:", y: {{ sum_profit_week8 }}},	
+			{ label: "Week 12 ROI Sum:", y: {{ sum_profit_week12 }} },
+			{ label: "Week 24 ROI Sum:", y: {{ sum_profit_week24 }}}			
+		]
+	}]
+});
+
+
+
+
+
+var chart3 = new CanvasJS.Chart("chartContainer3", {
+	animationEnabled: true,
+	theme: "light2", // "light1", "light2", "dark1", "dark2"
+	title: {
+		text: "Net Loss in $ vs Weeks"
+	},
+	axisY: {
+		title: "Net Loss (in $)",
+		suffix: "$"
+	},
+	axisX: {
+		title: "No. of weeks"
+	},
+	data: [{
+		type: "column",
+		yValueFormatString: "#,##0.0#\"$\"",
+		dataPoints: [
+			{ label: "Week 1 Loss Sum:", y: {{ sum_loss_week1 }} },	
+			{ label: "Week 2 Loss Sum:", y: {{ sum_loss_week2 }} },	
+			{ label: "Week 4 Loss Sum:", y: {{ sum_loss_week4 }} },
+			{ label: "Week 8 Loss Sum:", y: {{ sum_loss_week8 }}},	
+			{ label: "Week 12 Loss Sum:", y: {{ sum_loss_week12 }} },
+			{ label: "Week 24 Loss Sum:", y: {{ sum_loss_week24 }}}			
+		]
+	}]
+});
+
+
+
+var chart4 = new CanvasJS.Chart("chartContainer4", {
+	animationEnabled: true,
+	theme: "light2", // "light1", "light2", "dark1", "dark2"
+	title: {
+		text: "Net Profit in % vs Weeks"
+	},
+	axisY: {
+		title: "Net Profit (in %)",
+		suffix: "$"
+	},
+	axisX: {
+		title: "No. of weeks"
+	},
+	data: [{
+		type: "column",
+		yValueFormatString: "#,##0.0#\"$\"",
+		dataPoints: [
+			{ label: "Week 1 Profit %:", y: {{ sum_profit_percent_week1 }} },	
+			{ label: "Week 2 Profit %:", y: {{ sum_profit_percent_week2 }} },	
+			{ label: "Week 4 Profit %:", y: {{ sum_profit_percent_week4 }} },
+			{ label: "Week 8 Profit %:", y: {{ sum_profit_percent_week8 }}},	
+			{ label: "Week 12 Profit %:", y: {{ sum_profit_percent_week12 }} },
+			{ label: "Week 24 Profit %:", y: {{ sum_profit_percent_week24 }}}			
+		]
+	}]
+});
+
+
+
+var chart5 = new CanvasJS.Chart("chartContainer5", {
+	animationEnabled: true,
+	theme: "light2", // "light1", "light2", "dark1", "dark2"
+	title: {
+		text: "Net Loss in % vs Weeks"
+	},
+	axisY: {
+		title: "Net Loss (in %)",
+		suffix: "$"
+	},
+	axisX: {
+		title: "No. of weeks"
+	},
+	data: [{
+		type: "column",
+		yValueFormatString: "#,##0.0#\"$\"",
+		dataPoints: [
+			{ label: "Week 1 Loss %:", y: {{ sum_loss_percent_week1 }} },	
+			{ label: "Week 2 Loss %:", y: {{ sum_loss_percent_week2 }} },	
+			{ label: "Week 4 Loss %:", y: {{ sum_loss_percent_week4 }} },
+			{ label: "Week 8 Loss %:", y: {{ sum_loss_percent_week8 }}},	
+			{ label: "Week 12 Loss %:", y: {{ sum_loss_percent_week12 }} },
+			{ label: "Week 24 Loss %:", y: {{ sum_loss_percent_week24 }}}			
+		]
+	}]
+});
+
+var chart6 = new CanvasJS.Chart("chartContainer6", {
+	animationEnabled: true,
+	theme: "light2", // "light1", "light2", "dark1", "dark2"
+	title: {
+		text: "Significant Factors"
+	},
+	axisY: {
+		title: "Significantfactors Sum",
+		suffix: ""
+	},
+	axisX: {
+		title: "Significant Factor"
+	},
+	data: [{
+		type: "column",
+		yValueFormatString: "#,##0.0#\"$\"",
+		dataPoints: [
+			{ label: "TwoHundMovingAveragesum", y: {{ TwoHundMovingAveragesum }} },	
+			{ label: "TwentyMovingAveragesum", y: {{ TwentyMovingAveragesum }} },	
+			{ label: "", y: {{ ThreeMonthPercentGainsum }} },
+			{ label: "ThreeMonthPercentGainsum", y: {{ StandardDeviationWithMarketsum }}},	
+			{ label: "StandardDeviationsum", y: {{ StandardDeviationsum }} },
+			{ label: "PercentageLagsum", y: {{ PercentageLagsum }}}	,
+			{ label: "Multiplesum", y: {{ Multiplesum }} },	
+			{ label: "InvestmentRanksum", y: {{ InvestmentRanksum }} },	
+			{ label: "IndPricesum", y: {{ IndPricesum }} },
+			{ label: "IndGrowth2sum", y: {{ IndGrowth2sum }}},	
+			{ label: "IndGrowth12sum", y: {{ IndGrowth12sum }} },
+			{ label: "IndGrowth1sum", y: {{ IndGrowth1sum }}}	,
+			{ label: "FourWeekLowsum", y: {{ FourWeekLowsum }} },	
+			{ label: "FourWeekHighsum", y: {{ FourWeekHighsum }} },	
+			{ label: "FiftyMovingAveragesum", y: {{ FiftyMovingAveragesum }} },
+			{ label: "Fifty2WeekLowsum", y: {{ Fifty2WeekLowsum }}},	
+			{ label: "Fifty2WeekHighsum", y: {{ Fifty2WeekHighsum }} },
+			{ label: "Fifty2WeekChangesum", y: {{ Fifty2WeekChangesum }}}	,
+			{ label: "AvgVol3Monthssum", y: {{ AvgVol3Monthssum }} },
+			{ label: "AvgVol1Monthsum", y: {{ AvgVol1Monthsum }}},	
+			{ label: "AvgVol10Dayssum", y: {{ AvgVol10Dayssum }} }
+		]
+	}]
+});
+    
+	chart1.render();
+	chart2.render();
+	chart3.render();
+	chart4.render();
+	chart5.render();
+	chart6.render();
+
+
+
+
+};
+</script>
+</head>
+<body>
+
+	<nav class="navbar navbar-dark bg-dark">
+		<div class="container">
+		  <a class="navbar-brand">Aussie Stock Trader</a>
+		  <form class="d-flex">
+			<input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+			<button class="btn btn-outline-light" type="submit">Search</button>
+		  </form>
+		</div>
+	  </nav>
+	
+	<div class="container">
+
+		<div class="jumbotron" style="margin-top: 30px;">
+			<p style="font-size:x-large;"><b> Filter Top Stocks</b> </p>
+			
+			<form action="{% url 'index1' %}"> 
+				<select name="category" class="form-select" aria-label="Default select example" style="margin-top: 20px;">
+					<option selected>Choose the category</option>
+					<option value="all">all</option>
+					<option value="Consumer Discretionary">Consumer Discretionary</option>
+					<option value="Consumer Staple">Consumer Staple </option>
+					<option value="Energy">Energy</option>
+					<option value="Finance">Finance</option>
+					<option value="Consumer Staple">Consumer Staple </option>
+					<option value="Healthcare">Healthcare</option>
+					<option value="Industrial">Industrial</option>
+					<option value="Information Technology">Information Technology </option>
+					<option value="Material">Material</option>
+					<option value="Medium Cap">Medium Cap</option>
+					<option value="Small Cap">Small Cap </option>
+					<option value="Telecommunication">Telecommunication</option>
+					<option value="Utilities">Utilities</option>  
+					
+				  </select>
+				  <div id="radio" style="margin-top: 10px;">
+					<input type="radio" id="topstockyear" name="weekoryear" value="Year" onclick="change(this)" >
+					<label for="topstockyear">TopStock Year</label><br>
+					<input type="radio" id="topstockweek" name="weekoryear" value="Week" onclick="change(this)">
+					<label for="topstockweek">TopStock Week</label><br>					
+				</div>
+				  <div id="yearDiv" style="display: none;">
+					<select name="year" class="form-select" aria-label="Default select example" style="margin-top: 20px;">
+						<option value ="choose" selected>Choose the year</option>
+						<option value="2020">2020</option>
+						<option value="2021">2021 </option>        
+					  </select>
+		
+				
+					</div>
+		  </div>
+
+		  <div id="weekDiv" style="display: none;">
+			<div class="row">
+			 
+
+				<div class="col">
+					<select name="week" class="form-select" aria-label="Default select example" style="margin-top: 20px;" >
+						<option value="choose" selected>Choose the week</option>
+						{% for date in dates %}
+						<option value="{{date}}">{{date}}</option>
+						{%endfor%}
+     
+					  </select>
+					  </div>
+
+
+			</div>
+		</div>
+
+
+		<div id="showFilter" style="margin-top: 10px;">
+			<div class="row">
+				<div class="col">
+					<label for="$%">Show In: </label>
+					<select name="showin" class="form-select" id="$%" aria-label="Default select example" style="margin-top: 20px;">
+						<option selected>Show in</option>
+						<option value="dollarsandpercentage" >Both $ and % </option>						
+						<option value="dollars">Dollars</option>
+						<option value="percentage">Percentage</option>					
+     
+					  </select>
+					  </div>
+
+
+			</div>
+		</div>
+		<input class="btn btn-dark" type="submit" value="Show Results"  style=" margin-top: 20px; margin-right: 20px;">
+	</form><br>
+	<a href="compare/"> <input class="btn btn-dark"  value="Compare Stocks" style="margin-top: 20px;"></a>	
+	
+
+		<hr class="my-4">
+		
+		  <div class="container" id="charts" >
+			
+				  
+				{% if showin == "dollarsandpercentage" %}
+				<div class="row">
+				  <div class="col-md-6">
+					<div id="chartContainer1" style="height: 370px; width: 600px; margin: 30px;"></div>
+					<div id="chartContainer2" style="height: 370px; width: 600px; margin: 30px;"></div>
+
+				  </div>
+				  <div class="col-md-6">
+					<div id="chartContainer3" style="height: 370px; width: 600px; margin: 30px;"></div>
+					
+					<div id="chartContainer4" style="height: 370px; width: 600px; margin: 30px; "></div>
+
+				  </div>
+				  <div class="col-md-6">
+
+					<div id="chartContainer5" style="height: 370px; width: 600px; margin: 30px;"></div>
+
+				  </div>
+				  <div class="col-md-6">
+					<div id="chartContainer6" style="height: 370px; width: 600px; margin: 30px;"></div>
+
+				  </div>
+
+				</div>
+			  
+				  {% elif showin == "dollars" %}
+				  <div class="row">
+				  <div class="col-md-6">
+					<div id="chartContainer1" style="height: 370px; width: 600px; margin: 30px;"></div>
+					<div id="chartContainer2" style="height: 370px; width: 600px; margin: 30px;"></div>
+
+				  </div>
+				  <div class="col-md-6">
+
+					<div id="chartContainer3" style="height: 370px; width: 600px; margin: 30px;"></div>
+
+					<div class="col-md-6">
+						<div id="chartContainer6" style="height: 370px; width: 600px; margin: 30px;"></div>
+	
+					  </div>
+					
+					  <div class="col-md-6">
+	
+						<div id="chartContainer4" style="height: 370px; width: 600px; margin: 30px; display: none;"></div>
+						<div id="chartContainer5" style="height: 370px; width: 600px; margin: 30px; display: none;"></div>
+						
+					  </div>
+
+				  </div>
+
+				</div>
+				  {% elif showin == "percentage" %}
+				  <div class="row">
+
+				  <div class="col-md-6">
+						<div id="chartContainer4" style="height: 370px; width: 600px; margin: 30px;"></div>
+						<div id="chartContainer6" style="height: 370px; width: 600px; margin: 30px;"></div>
+
+					  </div>
+					  <div class="col-md-6">
+						<div id="chartContainer3" style="height: 370px; width: 600px; margin: 30px;"></div>
+						
+	
+					  </div>
+					  <div class="col-md-6">
+	
+						<div id="chartContainer2" style="height: 370px; width: 600px; margin: 30px; display: none;"></div>
+						<div id="chartContainer5" style="height: 370px; width: 600px; margin: 30px; display: none;"></div>
+						
+						<div id="chartContainer1" style="height: 370px; width: 600px; margin: 30px; display: none; "></div>
+					  </div>
+				  </div>
+
+
+				  {% endif %}
+
+
+		  </div>
+ 
+	 
+		<a href="home/"><button type="button" class="btn btn-dark">Go back to Home Page</button>
+		</a>
+	</div>
+    
+	<script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-kQtW33rZJAHjgefvhyyzcGF3C5TFyBQBA13V1RKPf4uH+bwyzQxZ6CmMZHmNBEfJ" crossorigin="anonymous"></script>
+	<script>
+		function change(selectedRadio){
+		if(selectedRadio.checked & selectedRadio.id==="topstockyear"){
+			document.getElementById("yearDiv").style.display="block";
+			document.getElementById("weekDiv").style.display="none";
+		}else if(selectedRadio.checked & selectedRadio.id==="topstockweek"){
+			document.getElementById("yearDiv").style.display="none";
+			document.getElementById("weekDiv").style.display="block";
+		}
+	}
+</script>
+
+
+</body>
+</html>

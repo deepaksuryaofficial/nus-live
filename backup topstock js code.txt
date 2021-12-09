@@ -1,0 +1,396 @@
+function submitFilterFunc(){
+
+    var Week1PandLArray= []
+    var Week2PandLArray= []
+    var Week4PandLArray= []
+    var Week8PandLArray= []
+    var Week12PandLArray= []
+    var Week24PandLArray= []
+
+    var top_win_stocks_w1=[]
+    var top_win_stocks_w2=[]
+    var top_win_stocks_w12=[]
+    var top_win_stocks_w4=[]
+    var top_win_stocks_w8=[]
+    var top_win_stocks_w24=[]
+
+    var top_loss_stocks_w1=[]
+    var top_loss_stocks_w2=[]
+    var top_loss_stocks_w12=[]
+    var top_loss_stocks_w4=[]
+    var top_loss_stocks_w8=[]
+    var top_loss_stocks_w24=[]
+
+    var sector_value= document.getElementById("sector").value;
+    var week_value= document.getElementById("week").value;
+    var period_value= document.getElementById("period").value;
+    document.getElementById("demo").innerHTML="sector value:"+sector_value+", week value:"+week_value+ ", period value:"+ period_value;
+
+    function sortNumber(a, b) {
+        return a - b;
+    }          
+
+    if(sector_value=="all" && week_value=="all"){
+    for(i=0;i<10;i++){
+        
+        Week1PandL_list_sorted=Week1PandL_list.concat().sort(sortNumber);
+        top_win_stocks_w1.push(Week1PandL_list.indexOf(Week1PandL_list_sorted.reverse()[i]))
+        top_loss_stocks_w1.push(Week1PandL_list.indexOf(Week1PandL_list_sorted[Week1PandL_list_sorted.length-i-1]))
+    }
+    for(i=0;i<10;i++){
+        Week2PandL_list_sorted=Week2PandL_list.concat().sort(sortNumber);
+        top_win_stocks_w2.push(Week2PandL_list.indexOf(Week2PandL_list_sorted.reverse()[i]))
+        top_loss_stocks_w2.push(Week2PandL_list.indexOf(Week2PandL_list_sorted[Week2PandL_list_sorted.length-i-1]))
+    }
+    for(i=0;i<10;i++){
+        Week4PandL_list_sorted=Week4PandL_list.concat().sort(sortNumber);
+        top_win_stocks_w4.push(Week4PandL_list.indexOf(Week4PandL_list_sorted.reverse()[i]))
+        top_loss_stocks_w4.push(Week4PandL_list.indexOf(Week4PandL_list_sorted[Week4PandL_list_sorted.length-i-1]))
+
+    }
+    for(i=0;i<10;i++){
+        Week8PandL_list_sorted=Week8PandL_list.concat().sort(sortNumber);
+        top_win_stocks_w8.push(Week8PandL_list.indexOf(Week8PandL_list_sorted.reverse()[i]))
+        top_loss_stocks_w8.push(Week8PandL_list.indexOf(Week8PandL_list_sorted[Week8PandL_list_sorted.length-i-1]))
+    }
+    for(i=0;i<10;i++){
+        Week12PandL_list_sorted=Week12PandL_list.concat().sort(sortNumber);
+        top_win_stocks_w12.push(Week12PandL_list.indexOf(Week12PandL_list_sorted.reverse()[i]))
+        top_loss_stocks_w12.push(Week12PandL_list.indexOf(Week12PandL_list_sorted[Week12PandL_list_sorted.length-i-1]))
+    }            
+    for(i=0;i<10;i++){
+        Week24PandL_list_sorted=Week24PandL_list.concat().sort(sortNumber);
+        top_win_stocks_w24.push(Week24PandL_list.indexOf(Week24PandL_list_sorted.reverse()[i]))
+        top_loss_stocks_w24.push(Week24PandL_list.indexOf(Week24PandL_list_sorted[Week24PandL_list_sorted.length-i-1]))
+    }          
+
+   
+
+   console.log(top_win_stocks_w1,top_win_stocks_w2,top_win_stocks_w4, top_win_stocks_w8, top_win_stocks_w12, top_win_stocks_w24, top_loss_stocks_w1,top_loss_stocks_w2,top_loss_stocks_w4,top_loss_stocks_w8,top_loss_stocks_w12,top_loss_stocks_w24)
+     
+
+    }else if(sector_value!="all" && week_value=="all"){
+        for(i=0;i<sectors_all.length;i++){
+            if(sectors_all[i]==sector_value){
+                Week1PandLArray.push(Week1PandL_list[i])
+                Week2PandLArray.push(Week2PandL_list[i])
+                Week4PandLArray.push(Week4PandL_list[i])
+                Week8PandLArray.push(Week8PandL_list[i])
+                Week12PandLArray.push(Week12PandL_list[i])
+                Week24PandLArray.push(Week24PandL_list[i])
+
+            }
+        }
+        for(i=0;i<10;i++){
+        Week1PandL_list_sorted=Week1PandLArray.concat().sort(sortNumber);
+        top_win_stocks_w1.push(Week1PandL_list.indexOf(Week1PandL_list_sorted.reverse()[i]))
+
+        
+        top_loss_stocks_w1.push(Week1PandL_list.indexOf(Week1PandL_list_sorted[Week1PandL_list_sorted.length-i-1]))
+    }
+    
+        console.log("Win: ",top_win_stocks_w1,"Loss: ",top_loss_stocks_w1)
+    }
+
+        if(period_value=="1 week"){
+            var chart1 = new CanvasJS.Chart("chartContainer1", {
+            title:{
+                text: "Top-10 Win Stocks ROI$ based"              
+            },
+            data: [              
+            {
+                // Change type to "doughnut", "line", "splineArea", etc.
+                type: "column",
+                dataPoints: [
+                    { label: codes_all[top_win_stocks_w1[0]],  y: Week1PandL_list[top_win_stocks_w1[0]]},
+                    { label: codes_all[top_win_stocks_w1[1]],  y: Week1PandL_list[top_win_stocks_w1[1]]},
+                    { label: codes_all[top_win_stocks_w1[2]],  y: Week1PandL_list[top_win_stocks_w1[2]]},
+                    { label: codes_all[top_win_stocks_w1[3]],  y: Week1PandL_list[top_win_stocks_w1[3]]},
+                    { label: codes_all[top_win_stocks_w1[4]],  y: Week1PandL_list[top_win_stocks_w1[4]]},
+                    { label: codes_all[top_win_stocks_w1[5]],  y: Week1PandL_list[top_win_stocks_w1[5]]},
+                    { label: codes_all[top_win_stocks_w1[6]],  y: Week1PandL_list[top_win_stocks_w1[6]]},
+                    { label: codes_all[top_win_stocks_w1[7]],  y: Week1PandL_list[top_win_stocks_w1[7]]},
+                    { label: codes_all[top_win_stocks_w1[8]],  y: Week1PandL_list[top_win_stocks_w1[8]]},
+                    { label: codes_all[top_win_stocks_w1[9]],  y: Week1PandL_list[top_win_stocks_w1[9]]}
+                ]
+            }
+            ]
+        });
+
+        var chart2 = new CanvasJS.Chart("chartContainer2", {
+            title:{
+                text: "Top-10 Loss Stocks ROI$ based"              
+            },
+            data: [              
+            {
+                // Change type to "doughnut", "line", "splineArea", etc.
+                type: "column",
+                dataPoints: [
+                    { label: codes_all[top_loss_stocks_w1[0]],  y: Week1PandL_list[top_loss_stocks_w1[0]]},
+                    { label: codes_all[top_loss_stocks_w1[1]],  y: Week1PandL_list[top_loss_stocks_w1[1]]},
+                    { label: codes_all[top_loss_stocks_w1[2]],  y: Week1PandL_list[top_loss_stocks_w1[2]]},
+                    { label: codes_all[top_loss_stocks_w1[3]],  y: Week1PandL_list[top_loss_stocks_w1[3]]},
+                    { label: codes_all[top_loss_stocks_w1[4]],  y: Week1PandL_list[top_loss_stocks_w1[4]]},
+                    { label: codes_all[top_loss_stocks_w1[5]],  y: Week1PandL_list[top_loss_stocks_w1[5]]},
+                    { label: codes_all[top_loss_stocks_w1[6]],  y: Week1PandL_list[top_loss_stocks_w1[6]]},
+                    { label: codes_all[top_loss_stocks_w1[7]],  y: Week1PandL_list[top_loss_stocks_w1[7]]},
+                    { label: codes_all[top_loss_stocks_w1[8]],  y: Week1PandL_list[top_loss_stocks_w1[8]]},
+                    { label: codes_all[top_loss_stocks_w1[9]],  y: Week1PandL_list[top_win_stocks_w1[9]]}
+                ]
+            }
+            ]
+        });
+        } else if(period_value=="2 weeks"){
+            var chart1 = new CanvasJS.Chart("chartContainer1", {
+            title:{
+                text: "Top-10 Win Stocks ROI$ based"              
+            },
+            data: [              
+            {
+                // Change type to "doughnut", "line", "splineArea", etc.
+                type: "column",
+                dataPoints: [
+                    { label: codes_all[top_win_stocks_w2[0]],  y: Week2PandL_list[top_win_stocks_w2[0]]},
+                    { label: codes_all[top_win_stocks_w2[1]],  y: Week2PandL_list[top_win_stocks_w2[1]]},
+                    { label: codes_all[top_win_stocks_w2[2]],  y: Week2PandL_list[top_win_stocks_w2[2]]},
+                    { label: codes_all[top_win_stocks_w2[3]],  y: Week2PandL_list[top_win_stocks_w2[3]]},
+                    { label: codes_all[top_win_stocks_w2[4]],  y: Week2PandL_list[top_win_stocks_w2[4]]},
+                    { label: codes_all[top_win_stocks_w2[5]],  y: Week2PandL_list[top_win_stocks_w2[5]]},
+                    { label: codes_all[top_win_stocks_w2[6]],  y: Week2PandL_list[top_win_stocks_w2[6]]},
+                    { label: codes_all[top_win_stocks_w2[7]],  y: Week2PandL_list[top_win_stocks_w2[7]]},
+                    { label: codes_all[top_win_stocks_w2[8]],  y: Week2PandL_list[top_win_stocks_w2[8]]},
+                    { label: codes_all[top_win_stocks_w2[9]],  y: Week2PandL_list[top_win_stocks_w2[9]]}
+                ]
+            }
+            ]
+        });
+
+        var chart2 = new CanvasJS.Chart("chartContainer2", {
+            title:{
+                text: "Top-10 Loss Stocks ROI$ based"              
+            },
+            data: [              
+            {
+                // Change type to "doughnut", "line", "splineArea", etc.
+                type: "column",
+                dataPoints: [
+                    { label: codes_all[top_loss_stocks_w2[0]],  y: Week2PandL_list[top_loss_stocks_w2[0]]},
+                    { label: codes_all[top_loss_stocks_w2[1]],  y: Week2PandL_list[top_loss_stocks_w2[1]]},
+                    { label: codes_all[top_loss_stocks_w2[2]],  y: Week2PandL_list[top_loss_stocks_w2[2]]},
+                    { label: codes_all[top_loss_stocks_w2[3]],  y: Week2PandL_list[top_loss_stocks_w2[3]]},
+                    { label: codes_all[top_loss_stocks_w2[4]],  y: Week2PandL_list[top_loss_stocks_w2[4]]},
+                    { label: codes_all[top_loss_stocks_w2[5]],  y: Week2PandL_list[top_loss_stocks_w2[5]]},
+                    { label: codes_all[top_loss_stocks_w2[6]],  y: Week2PandL_list[top_loss_stocks_w2[6]]},
+                    { label: codes_all[top_loss_stocks_w2[7]],  y: Week2PandL_list[top_loss_stocks_w2[7]]},
+                    { label: codes_all[top_loss_stocks_w2[8]],  y: Week2PandL_list[top_loss_stocks_w2[8]]},
+                    { label: codes_all[top_loss_stocks_w2[9]],  y: Week2PandL_list[top_win_stocks_w2[9]]}
+                ]
+            }
+            ]
+        }); 
+        }
+        else if(period_value=="4 weeks"){
+            var chart1 = new CanvasJS.Chart("chartContainer1", {
+            title:{
+                text: "Top-10 Win Stocks ROI$ based"              
+            },
+            data: [              
+            {
+                // Change type to "doughnut", "line", "splineArea", etc.
+                type: "column",
+                dataPoints: [
+                    { label: codes_all[top_win_stocks_w4[0]],  y: Week4PandL_list[top_win_stocks_w4[0]]},
+                    { label: codes_all[top_win_stocks_w4[1]],  y: Week4PandL_list[top_win_stocks_w4[1]]},
+                    { label: codes_all[top_win_stocks_w4[2]],  y: Week4PandL_list[top_win_stocks_w4[2]]},
+                    { label: codes_all[top_win_stocks_w4[3]],  y: Week4PandL_list[top_win_stocks_w4[3]]},
+                    { label: codes_all[top_win_stocks_w4[4]],  y: Week4PandL_list[top_win_stocks_w4[4]]},
+                    { label: codes_all[top_win_stocks_w4[5]],  y: Week4PandL_list[top_win_stocks_w4[5]]},
+                    { label: codes_all[top_win_stocks_w4[6]],  y: Week4PandL_list[top_win_stocks_w4[6]]},
+                    { label: codes_all[top_win_stocks_w4[7]],  y: Week4PandL_list[top_win_stocks_w4[7]]},
+                    { label: codes_all[top_win_stocks_w4[8]],  y: Week4PandL_list[top_win_stocks_w4[8]]},
+                    { label: codes_all[top_win_stocks_w4[9]],  y: Week4PandL_list[top_win_stocks_w4[9]]}
+                ]
+            }
+            ]
+        });
+
+        var chart2 = new CanvasJS.Chart("chartContainer2", {
+            title:{
+                text: "Top-10 Loss Stocks ROI$ based"              
+            },
+            data: [              
+            {
+                // Change type to "doughnut", "line", "splineArea", etc.
+                type: "column",
+                dataPoints: [
+                    { label: codes_all[top_loss_stocks_w4[0]],  y: Week4PandL_list[top_loss_stocks_w4[0]]},
+                    { label: codes_all[top_loss_stocks_w4[1]],  y: Week4PandL_list[top_loss_stocks_w4[1]]},
+                    { label: codes_all[top_loss_stocks_w4[2]],  y: Week4PandL_list[top_loss_stocks_w4[2]]},
+                    { label: codes_all[top_loss_stocks_w4[3]],  y: Week4PandL_list[top_loss_stocks_w4[3]]},
+                    { label: codes_all[top_loss_stocks_w4[4]],  y: Week4PandL_list[top_loss_stocks_w4[4]]},
+                    { label: codes_all[top_loss_stocks_w4[5]],  y: Week4PandL_list[top_loss_stocks_w4[5]]},
+                    { label: codes_all[top_loss_stocks_w4[6]],  y: Week4PandL_list[top_loss_stocks_w4[6]]},
+                    { label: codes_all[top_loss_stocks_w4[7]],  y: Week4PandL_list[top_loss_stocks_w4[7]]},
+                    { label: codes_all[top_loss_stocks_w4[8]],  y: Week4PandL_list[top_loss_stocks_w4[8]]},
+                    { label: codes_all[top_loss_stocks_w4[9]],  y: Week4PandL_list[top_win_stocks_w4[9]]}
+                ]
+            }
+            ]
+        }); 
+        }else if(period_value=="8 weeks"){
+            var chart1 = new CanvasJS.Chart("chartContainer1", {
+            title:{
+                text: "Top-10 Win Stocks ROI$ based"              
+            },
+            data: [              
+            {
+                // Change type to "doughnut", "line", "splineArea", etc.
+                type: "column",
+                dataPoints: [
+                    { label: codes_all[top_win_stocks_w8[0]],  y: Week8PandL_list[top_win_stocks_w8[0]]},
+                    { label: codes_all[top_win_stocks_w8[1]],  y: Week8PandL_list[top_win_stocks_w8[1]]},
+                    { label: codes_all[top_win_stocks_w8[2]],  y: Week8PandL_list[top_win_stocks_w8[2]]},
+                    { label: codes_all[top_win_stocks_w8[3]],  y: Week8PandL_list[top_win_stocks_w8[3]]},
+                    { label: codes_all[top_win_stocks_w8[4]],  y: Week8PandL_list[top_win_stocks_w8[4]]},
+                    { label: codes_all[top_win_stocks_w8[5]],  y: Week8PandL_list[top_win_stocks_w8[5]]},
+                    { label: codes_all[top_win_stocks_w8[6]],  y: Week8PandL_list[top_win_stocks_w8[6]]},
+                    { label: codes_all[top_win_stocks_w8[7]],  y: Week8PandL_list[top_win_stocks_w8[7]]},
+                    { label: codes_all[top_win_stocks_w8[8]],  y: Week8PandL_list[top_win_stocks_w8[8]]},
+                    { label: codes_all[top_win_stocks_w8[9]],  y: Week8PandL_list[top_win_stocks_w8[9]]}
+                ]
+            }
+            ]
+        });
+
+        var chart2 = new CanvasJS.Chart("chartContainer2", {
+            title:{
+                text: "Top-10 Loss Stocks ROI$ based"              
+            },
+            data: [              
+            {
+                // Change type to "doughnut", "line", "splineArea", etc.
+                type: "column",
+                dataPoints: [
+                    { label: codes_all[top_loss_stocks_w8[0]],  y: Week8PandL_list[top_loss_stocks_w8[0]]},
+                    { label: codes_all[top_loss_stocks_w8[1]],  y: Week8PandL_list[top_loss_stocks_w8[1]]},
+                    { label: codes_all[top_loss_stocks_w8[2]],  y: Week8PandL_list[top_loss_stocks_w8[2]]},
+                    { label: codes_all[top_loss_stocks_w8[3]],  y: Week8PandL_list[top_loss_stocks_w8[3]]},
+                    { label: codes_all[top_loss_stocks_w8[4]],  y: Week8PandL_list[top_loss_stocks_w8[4]]},
+                    { label: codes_all[top_loss_stocks_w8[5]],  y: Week8PandL_list[top_loss_stocks_w8[5]]},
+                    { label: codes_all[top_loss_stocks_w8[6]],  y: Week8PandL_list[top_loss_stocks_w8[6]]},
+                    { label: codes_all[top_loss_stocks_w8[7]],  y: Week8PandL_list[top_loss_stocks_w8[7]]},
+                    { label: codes_all[top_loss_stocks_w8[8]],  y: Week8PandL_list[top_loss_stocks_w8[8]]},
+                    { label: codes_all[top_loss_stocks_w8[9]],  y: Week8PandL_list[top_win_stocks_w8[9]]}
+                ]
+            }
+            ]
+        }); 
+        }else if(period_value=="12 weeks"){
+            var chart1 = new CanvasJS.Chart("chartContainer1", {
+            title:{
+                text: "Top-10 Win Stocks ROI$ based"              
+            },
+            data: [              
+            {
+                // Change type to "doughnut", "line", "splineArea", etc.
+                type: "column",
+                dataPoints: [
+                    { label: codes_all[top_win_stocks_w12[0]],  y: Week12PandL_list[top_win_stocks_w12[0]]},
+                    { label: codes_all[top_win_stocks_w12[1]],  y: Week12PandL_list[top_win_stocks_w12[1]]},
+                    { label: codes_all[top_win_stocks_w12[2]],  y: Week12PandL_list[top_win_stocks_w12[2]]},
+                    { label: codes_all[top_win_stocks_w12[3]],  y: Week12PandL_list[top_win_stocks_w12[3]]},
+                    { label: codes_all[top_win_stocks_w12[4]],  y: Week12PandL_list[top_win_stocks_w12[4]]},
+                    { label: codes_all[top_win_stocks_w12[5]],  y: Week12PandL_list[top_win_stocks_w12[5]]},
+                    { label: codes_all[top_win_stocks_w12[6]],  y: Week12PandL_list[top_win_stocks_w12[6]]},
+                    { label: codes_all[top_win_stocks_w12[7]],  y: Week12PandL_list[top_win_stocks_w12[7]]},
+                    { label: codes_all[top_win_stocks_w12[8]],  y: Week12PandL_list[top_win_stocks_w12[8]]},
+                    { label: codes_all[top_win_stocks_w12[9]],  y: Week12PandL_list[top_win_stocks_w12[9]]}
+                ]
+            }
+            ]
+        });
+
+        var chart2 = new CanvasJS.Chart("chartContainer2", {
+            title:{
+                text: "Top-10 Loss Stocks ROI$ based"              
+            },
+            data: [              
+            {
+                // Change type to "doughnut", "line", "splineArea", etc.
+                type: "column",
+                dataPoints: [
+                    { label: codes_all[top_loss_stocks_w12[0]],  y: Week12PandL_list[top_loss_stocks_w12[0]]},
+                    { label: codes_all[top_loss_stocks_w12[1]],  y: Week12PandL_list[top_loss_stocks_w12[1]]},
+                    { label: codes_all[top_loss_stocks_w12[2]],  y: Week12PandL_list[top_loss_stocks_w12[2]]},
+                    { label: codes_all[top_loss_stocks_w12[3]],  y: Week12PandL_list[top_loss_stocks_w12[3]]},
+                    { label: codes_all[top_loss_stocks_w12[4]],  y: Week12PandL_list[top_loss_stocks_w12[4]]},
+                    { label: codes_all[top_loss_stocks_w12[5]],  y: Week12PandL_list[top_loss_stocks_w12[5]]},
+                    { label: codes_all[top_loss_stocks_w12[6]],  y: Week12PandL_list[top_loss_stocks_w12[6]]},
+                    { label: codes_all[top_loss_stocks_w12[7]],  y: Week12PandL_list[top_loss_stocks_w12[7]]},
+                    { label: codes_all[top_loss_stocks_w12[8]],  y: Week12PandL_list[top_loss_stocks_w12[8]]},
+                    { label: codes_all[top_loss_stocks_w12[9]],  y: Week12PandL_list[top_win_stocks_w12[9]]}
+                ]
+            }
+            ]
+        }); 
+        }
+        else if(period_value=="24 weeks"){
+            var chart1 = new CanvasJS.Chart("chartContainer1", {
+            title:{
+                text: "Top-10 Win Stocks ROI$ based"              
+            },
+            data: [              
+            {
+                // Change type to "doughnut", "line", "splineArea", etc.
+                type: "column",
+                dataPoints: [
+                    { label: codes_all[top_win_stocks_w24[0]],  y: Week24PandL_list[top_win_stocks_w24[0]]},
+                    { label: codes_all[top_win_stocks_w24[1]],  y: Week24PandL_list[top_win_stocks_w24[1]]},
+                    { label: codes_all[top_win_stocks_w24[2]],  y: Week24PandL_list[top_win_stocks_w24[2]]},
+                    { label: codes_all[top_win_stocks_w24[3]],  y: Week24PandL_list[top_win_stocks_w24[3]]},
+                    { label: codes_all[top_win_stocks_w24[4]],  y: Week24PandL_list[top_win_stocks_w24[4]]},
+                    { label: codes_all[top_win_stocks_w24[5]],  y: Week24PandL_list[top_win_stocks_w24[5]]},
+                    { label: codes_all[top_win_stocks_w24[6]],  y: Week24PandL_list[top_win_stocks_w24[6]]},
+                    { label: codes_all[top_win_stocks_w24[7]],  y: Week24PandL_list[top_win_stocks_w24[7]]},
+                    { label: codes_all[top_win_stocks_w24[8]],  y: Week24PandL_list[top_win_stocks_w24[8]]},
+                    { label: codes_all[top_win_stocks_w24[9]],  y: Week24PandL_list[top_win_stocks_w24[9]]}
+                ]
+            }
+            ]
+        });
+
+        var chart2 = new CanvasJS.Chart("chartContainer2", {
+            title:{
+                text: "Top-10 Loss Stocks ROI$ based"              
+            },
+            data: [              
+            {
+                // Change type to "doughnut", "line", "splineArea", etc.
+                type: "column",
+                dataPoints: [
+                    { label: codes_all[top_loss_stocks_w24[0]],  y: Week24PandL_list[top_loss_stocks_w24[0]]},
+                    { label: codes_all[top_loss_stocks_w24[1]],  y: Week24PandL_list[top_loss_stocks_w24[1]]},
+                    { label: codes_all[top_loss_stocks_w24[2]],  y: Week24PandL_list[top_loss_stocks_w24[2]]},
+                    { label: codes_all[top_loss_stocks_w24[3]],  y: Week24PandL_list[top_loss_stocks_w24[3]]},
+                    { label: codes_all[top_loss_stocks_w24[4]],  y: Week24PandL_list[top_loss_stocks_w24[4]]},
+                    { label: codes_all[top_loss_stocks_w24[5]],  y: Week24PandL_list[top_loss_stocks_w24[5]]},
+                    { label: codes_all[top_loss_stocks_w24[6]],  y: Week24PandL_list[top_loss_stocks_w24[6]]},
+                    { label: codes_all[top_loss_stocks_w24[7]],  y: Week24PandL_list[top_loss_stocks_w24[7]]},
+                    { label: codes_all[top_loss_stocks_w24[8]],  y: Week24PandL_list[top_loss_stocks_w24[8]]},
+                    { label: codes_all[top_loss_stocks_w24[9]],  y: Week24PandL_list[top_win_stocks_w24[9]]}
+                ]
+            }
+            ]
+        }); 
+        }
+        chart1.render();
+        chart2.render();
+
+    
+    
+    
+
+        
+
+    
+}

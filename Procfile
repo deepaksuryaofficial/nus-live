@@ -1,0 +1,1 @@
+web: gunicorn  topstock.wsgi --log-file -

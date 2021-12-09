@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-uWxY/CJNBR+1zjPWmfnSnVxwRheevXITnMqoEIeG1LJrdI0GlVs/9cVSyPYXdcSF" crossorigin="anonymous">
+
+</head>
+<body>
+    <form action="{% url 'index' %}"> 
+    <select name="category" class="form-select" aria-label="Default select example">
+        <option selected>Choose the category</option>
+        <option value="Consumer Discretionary">Consumer Discretionary</i>
+        </option>
+        <option value="Consumer Staple" onclick="multipleSelectSector()">Consumer Staple </option>
+        <option value="Energy">Energy</option>
+        <option value="Finance">Finance</option>
+        <option value="Consumer Staple">Consumer Staple </option>
+        <option value="Healthcare">Healthcare</option>
+        <option value="Industrial">Industrial</option>
+        <option value="Information Technology">Information Technology </option>
+        <option value="Material">Material</option>
+        <option value="Medium Cap">Medium Cap</option>
+        <option value="Small Cap">Small Cap </option>
+        <option value="Telecommunication">Telecommunication</option>
+        <option value="Utilities">Utilities</option>  
+        
+      </select>
+
+      <select name="year" class="form-select" aria-label="Default select example">
+        <option selected>Choose the year</option>
+        <option value="1">2020</option>
+        <option value="2">2021 </option>        
+      </select>
+      <input class="btn btn-primary" type="submit" value="Submit">
+    </form>
+    <script>
+        function multipleSelectSector(chosenSector)
+        {
+            chosenSector.body.style.backgroundColor= "red";
+        }
+    </script>
+  
+
+      <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-kQtW33rZJAHjgefvhyyzcGF3C5TFyBQBA13V1RKPf4uH+bwyzQxZ6CmMZHmNBEfJ" crossorigin="anonymous"></script>
+
+</body>
+</html>

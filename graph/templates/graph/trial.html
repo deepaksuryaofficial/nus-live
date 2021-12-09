@@ -1,0 +1,1306 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
+    <title>Document</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+    
+</head>
+<body>
+    <!-- As a heading -->
+<nav class="navbar navbar-dark bg-dark">
+    <div class="container">
+        <span class="navbar-brand mb-0 h1">Backtesting Design</span>
+        
+        <a href="" style="color: whitesmoke; margin-left: auto; margin-right: 15px;">Top Stock ROI</a>
+        <a href="/topstocks" style="color: whitesmoke;">Top 10 Stocks</a>
+   
+    </div>
+
+    
+  </nav>
+
+    <div class="container" style="margin-top: 30px;">
+        <label for="sector">Choose sector:</label>
+        <select name="sector" id="sector" onchange="myFunctionSector()">
+            {% for item in sectors%}
+          <option value="{{item}}">{{item}}</option>
+            {% endfor %}
+        </select>
+    
+        <label for="week">Choose Week:</label>
+        <select name="week" id="week" onchange="myFunction()" >
+            {% for item in weeks%}
+          <option value="{{item}}">{{item}}</option>
+            {% endfor %}
+        </select>
+    
+        <label for="code">Choose Code:</label>
+        <select name="code" id="code" onclick="onclickfunc()">
+            {% for item in codes%}
+            <option value="{{item}}">{{item}}</option>
+              {% endfor %}
+        </select>
+        
+        <button type="button" class="btn btn-dark" style="margin-left: 20px ;" onclick="submitFilterFunc()"> Filter and Search</button>
+    
+    
+        <p id="demo"></p>
+    </div>
+    
+    <div class="container">
+        <div class="row">
+            <div class="col">
+                <div id="chartContainer1" style="height: 270px; width: 500px; margin: 30px;"></div>
+                <div id="chartContainer2" style="height: 270px; width: 500px; margin: 30px;"></div>
+                
+            </div>
+            <div class="col">
+                <div id="chartContainer3" style="height: 270px; width: 500px; margin: 30px;"></div>
+                <div id="chartContainer4" style="height: 270px; width: 500px; margin: 30px;"></div>
+            </div>
+            <div class="col">
+                <div id="chartContainer5" style="height: 350px; width: 1200px; margin: 30px;"></div>
+
+            </div>
+
+
+            
+        </div>
+      
+    </div>
+   
+    <script>
+        var weeks= {{weeks|safe}}
+        var codes= {{codes|safe}}
+        var sectors= {{sectors|safe}}
+
+        var week_value= "all"
+        var code_value= "all"
+        var sector_value = "all"
+
+        var sectors_all={{sectors_all|safe}}
+        var start_dates_all ={{start_dates_all|safe}}
+        var end_dates_all ={{end_dates_all|safe}}
+        var codes_all ={{codes_all|safe}}
+        var close_list_all={{close_list_all|safe}}
+
+        var Week1PandL_list= {{Week1PandL_list|safe}}
+        var Week2PandL_list= {{Week2PandL_list|safe}}
+        var Week4PandL_list= {{Week4PandL_list|safe}}
+        var Week8PandL_list= {{Week8PandL_list|safe}}
+        var Week12PandL_list= {{Week12PandL_list|safe}}
+        var Week24PandL_list= {{Week24PandL_list|safe}}
+
+        var TwoHundMovingAverage= {{TwoHundMovingAverage|safe}}
+        var TwentyMovingAverage= {{TwentyMovingAverage|safe}}
+        var ThreeMonthPercentGain= {{ThreeMonthPercentGain|safe}}
+        var StandardDeviationWithMarket= {{StandardDeviationWithMarket|safe}}
+        var StandardDeviation= {{StandardDeviation|safe}}
+        var PercentageLag= {{PercentageLag|safe}}
+        var OneMonthPercentGain= {{OneMonthPercentGain|safe}}
+        var Multiple= {{Multiple|safe}}
+        var InvestmentRank= {{InvestmentRank|safe}}
+        var IndPrice= {{IndPrice|safe}}
+        var IndGrowth2= {{IndGrowth2|safe}}
+        var IndGrowth12= {{IndGrowth12|safe}}
+        var IndGrowth1= {{IndGrowth1|safe}}
+        var FourWeekLow= {{FourWeekLow|safe}}
+        var FourWeekHigh= {{FourWeekHigh|safe}}
+        var FiftyMovingAverage= {{FiftyMovingAverage|safe}}
+        var Fifty2WeekLow= {{Fifty2WeekLow|safe}}
+        var Fifty2WeekHigh= {{Fifty2WeekHigh|safe}}
+        var Fifty2WeekChange= {{Fifty2WeekChange|safe}}
+        var AvgVol3Months= {{AvgVol3Months|safe}}
+        var AvgVol1Month= {{AvgVol1Month|safe}}
+        var AvgVol10Days= {{AvgVol10Days|safe}}
+
+        
+
+        
+
+        function myFunctionSector(){
+            var sector_value= document.getElementById("sector").value;
+            var week_value= document.getElementById("week").value;
+            weeksArray=[]
+            codesArray=["all"]
+            
+
+            dropdownLengthWeeksBefore= document.getElementById("week").options.length;
+            console.log("calling sector func ", sector_value,dropdownLengthWeeksBefore)
+            console.log(sectors_all)
+
+            if(sector_value!="all"){
+                for(i=0;i<sectors_all.length;i++){
+                if(i==0){
+                    weeksArray.push("all")
+                }
+
+                //console.log(sector_value, sectors_all[i])
+                if(sectors_all[i]==sector_value){
+                    
+                    if(weeksArray.indexOf(start_dates_all[i]+" to "+ end_dates_all[i])===-1){
+                        weeksArray.push(start_dates_all[i]+" to "+ end_dates_all[i]);
+                    }
+                }
+            }
+            
+
+                    for(i = dropdownLengthWeeksBefore-1; i >= 0; i--) {
+                        document.getElementById("week").options.remove(i);                        
+                    }
+
+                    //set weeks to options value in code dropdown
+
+                    for(i=0; i<weeksArray.length;i++){
+                        var weekList = document.getElementById("week");
+                        var option = document.createElement("option");
+                        option.text = weeksArray[i];
+                        weekList.add(option);
+                    }
+
+            dropdownLengthWeeksAfter= document.getElementById("week").options.length;
+            console.log("calling sector func ", sector_value,dropdownLengthWeeksAfter)
+            console.log(weeksArray)
+
+            if(week_value=="all"){
+                    // create codes array
+                    for(i=0;i<sectors_all.length;i++){
+                        if(sectors_all[i]==sector_value){
+                            if (codesArray.indexOf(codes_all[i])===-1){
+                                codesArray.push(codes_all[i])
+
+                            }
+                            
+                        }
+                    }
+                    //delete the exis items in code  dropdown
+                    dropdownLength=document.getElementById("code").options.length;
+                    console.log("dropdownLength Codes:",dropdownLength)
+                    
+
+                    for(i = dropdownLength-1; i >= 0; i--) {
+                        document.getElementById("code").options.remove(i);                        
+                    }
+                    
+                    //update codes array items to dropdown options code  
+                    for(i=0; i<codesArray.length;i++){
+                        var codeList = document.getElementById("code");
+                        var option = document.createElement("option");
+                        option.text = codesArray[i];
+                        codeList.add(option);
+                    }
+                    
+
+                    dropdownLengthnew=document.getElementById("code").options.length;
+                    console.log("dropdownLength New Codes:",dropdownLengthnew, "SECTOR: ", sector_value)
+            }
+                }else{
+
+                    //delete items in weeks and code
+                    dropdownLength=document.getElementById("code").options.length;
+                    console.log("dropdownLength Codes:",dropdownLength)
+
+                    for(i = dropdownLength-1; i >= 0; i--) {
+                        document.getElementById("code").options.remove(i);                        
+                    }
+
+                    dropdownLength=document.getElementById("week").options.length;
+                    console.log("dropdownLength Weeks:",dropdownLength)
+
+                    for(i = dropdownLength-1; i >= 0; i--) {
+                        document.getElementById("week").options.remove(i);                        
+                    }
+                    
+                    // update week and code list fom weeks and codes repectivley
+                    for(i=0;i<codes.length;i++){
+                        var codeList = document.getElementById("code");
+                        var option = document.createElement("option");
+                        option.text = codes[i];
+                        codeList.add(option);
+                    }
+
+                    for(i=0;i<weeks.length;i++){
+                        var weekList = document.getElementById("week");
+                        var option = document.createElement("option");
+                        option.text = weeks[i];
+                        weekList.add(option);
+                    }
+                }
+            }
+        
+        function onclickfunc(){
+            code_value= document.getElementById("code").value;
+            sector_value= document.getElementById("sector").value;
+            week_value= document.getElementById("week").value;
+            document.getElementById("demo").innerHTML="sector value:"+sector_value+", week value:"+week_value+ ", code value:"+ code_value;
+        }
+        function myFunction(){            
+
+            var weeksArray=[]
+            var codesArray=["all"]
+
+            sector_value= document.getElementById("sector").value;
+            week_value= document.getElementById("week").value;
+            code_value= document.getElementById("code").value;
+
+            
+                if(sector_value=="all"&& week_value=="all"){                    
+
+
+                    // delete preexisting options
+                    dropdownLength=document.getElementById("code").options.length;
+                    console.log("dropdownLength Codes:",dropdownLength)
+
+                    for(i = dropdownLength-1; i >= 0; i--) {
+                        document.getElementById("code").options.remove(i);                        
+                    }
+
+                    //set codes to options value in code dropdown
+
+                    for(i=0; i<codes.length;i++){
+                        var codeList = document.getElementById("code");
+                        var option = document.createElement("option");
+                        option.text = codes[i];
+                        codeList.add(option);
+                    }
+                }
+                //If Sector is not equal to all but Week value is all
+                
+                if(sector_value!="all" && week_value=="all"){
+                    // create codes array
+                    for(i=0;i<sectors_all.length;i++){
+                        if(sectors_all[i]==sector_value){
+                            if (codesArray.indexOf(codes_all[i])===-1){
+                                codesArray.push(codes_all[i]);
+                                
+
+                            }
+                            
+                        }
+                    }
+                    //delete the exis items in code  dropdown
+                    dropdownLength=document.getElementById("code").options.length;
+                    console.log("dropdownLength Codes:",dropdownLength)
+                    
+
+                    for(i = dropdownLength-1; i >=0; i--) {
+                        document.getElementById("code").options.remove(i);                        
+                    }
+                    
+                    //update codes array items to dropdown options code  
+                    
+                    for(i=0; i<codesArray.length;i++){
+                    var codeList = document.getElementById("code");
+                    var option = document.createElement("option");
+                    option.text = codesArray[i];
+                    codeList.add(option);
+                        
+                        
+                        
+                    }
+                    
+
+                    dropdownLengthnew=document.getElementById("code").options.length;
+                    console.log("dropdownLength New Codes:",dropdownLengthnew, "SECTOR: ", sector_value)
+                    
+                }
+
+                //if sector is alll but week is not equal to all
+
+                if(sector_value == "all" && week_value!= "all"){
+                    
+                    // create code array based on chosen week value
+
+
+                    for( i=0; i<start_dates_all.length; i++){
+                        if(week_value== start_dates_all[i]+" to "+end_dates_all[i]){
+                            
+                            if(codesArray.indexOf(codes_all[i])===-1){
+                                codesArray.push(codes_all[i])
+                            }
+
+                        }
+                    }
+
+                    // delete the exisiting items in the code dropdown
+
+                    dropdownLength=document.getElementById("code").options.length;
+                    console.log("dropdownLength Codes:",dropdownLength)
+                    for(i = dropdownLength-1; i >= 0; i--) {
+                        document.getElementById("code").options.remove(i);                        
+                    }
+
+                    // add the items in code array to the dropdown
+
+                    for(i=0; i<codesArray.length; i++){
+                        var codeList = document.getElementById("code");
+                        var option = document.createElement("option");
+                        option.text = codes[i];
+                        codeList.add(option);
+                    }
+                    dropdownLengthnew=document.getElementById("code").options.length;
+                    console.log("dropdownLength Codes:",dropdownLengthnew)
+                }
+
+                // if both week and sector is not all
+
+                if(sector_value!="all" && week_value!="all"){
+                    //create codearray based on chosen sector and week
+                    for ( i=0;i<sectors_all.length;i++){
+                        if(sectors_all[i]==sector_value && week_value==start_dates_all[i]+ " to "+ end_dates_all[i]){
+                            if(codesArray.indexOf(codes_all[i])===-1){
+                                codesArray.push(codes_all[i])
+                            }
+                        }
+                    }
+                    console.log("Code array: ", codesArray)
+
+                    //delete existing items in dropdown
+
+                    dropdownLength=document.getElementById("code").options.length;
+                    console.log("dropdownLength Codes:",dropdownLength)
+                    for(i = dropdownLength-1; i >= 0; i--) {
+                        document.getElementById("code").options.remove(i);                        
+                    }
+
+                    //update dropdown values based on codearray new
+                    for(i=0; i<codesArray.length; i++){
+                        var codeList = document.getElementById("code");
+                        var option = document.createElement("option");
+                        option.text = codesArray[i];
+                        codeList.add(option);
+                    }
+                    dropdownLengthnew=document.getElementById("code").options.length;
+                    console.log("dropdownLength Codes:",dropdownLengthnew)
+
+
+
+                    
+                }
+            console.log(codesArray)
+            document.getElementById("demo").innerHTML="sector value:"+sector_value+", week value:"+week_value+ ", code value:"+ code_value;
+        }
+
+        function submitFilterFunc(){
+            var code_value= document.getElementById("code").value;
+            var sector_value= document.getElementById("sector").value;
+            var week_value= document.getElementById("week").value;
+            console.log("Submited values :", code_value, sector_value, week_value)
+            console.log(TwoHundMovingAverage)
+            
+            var close_value_sum=0, close_value_pos_sum=0,close_value_neg_sum=0;
+            var week1_roi_sum =0,week2_roi_sum=0,week4_roi_sum=0,week8_roi_sum=0,week12_roi_sum=0,week24_roi_sum=0;
+            var week1_pos_roi_sum =0,week2_pos_roi_sum=0,week4_pos_roi_sum=0,week8_pos_roi_sum=0,week12_pos_roi_sum=0,week24_pos_roi_sum=0;
+            var week1_neg_roi_sum =0,week2_neg_roi_sum=0,week4_neg_roi_sum=0,week8_neg_roi_sum=0,week12_neg_roi_sum=0,week24_neg_roi_sum=0;
+            var week1_pos_close_sum =0,week2_pos_close_sum=0,week4_pos_close_sum=0,week8_pos_close_sum=0,week12_pos_close_sum=0,week24_pos_close_sum=0;
+            var week1_neg_close_sum =0,week2_neg_close_sum=0,week4_neg_close_sum=0,week8_neg_close_sum=0,week12_neg_close_sum=0,week24_neg_close_sum=0;
+            var week1_pos_count =0,week2_pos_count=0,week4_pos_count=0,week8_pos_count=0,week12_pos_count=0,week24_pos_count=0;
+            var week1_neg_count =0,week2_neg_count=0,week4_neg_count=0,week8_neg_count=0,week12_neg_count=0,week24_neg_count=0;
+           
+            var TwoHundMovingAverageSum= 0
+            var TwentyMovingAverageSum= 0
+            var ThreeMonthPercentGainSum=0
+            var StandardDeviationWithMarketSum= 0
+            var StandardDeviationSum= 0
+            var PercentageLagSum= 0
+            var OneMonthPercentGainSum= 0
+            var MultipleSum=0
+            var InvestmentRankSum= 0
+            var IndPriceSum= 0
+            var IndGrowth2Sum =0
+            var IndGrowth12Sum= 0
+            var IndGrowth1Sum= 0
+            var FourWeekLowSum= 0
+            var FourWeekHighSum= 0
+            var FiftyMovingAverageSum= 0
+            var Fifty2WeekLowSum= 0
+            var Fifty2WeekHighSum=0
+            var Fifty2WeekChangeSum= 0
+            var AvgVol3MonthsSum= 0
+            var AvgVol1MonthSum= 0
+            var AvgVol10DaysSum= 0
+
+
+            
+
+
+            if(sector_value=="all" && week_value=="all" && code_value=="all"){
+                for(i=0;i<close_list_all.length;i++){
+
+                    close_value_sum+=close_list_all[i]
+                                      
+
+                    week1_roi_sum+=Week1PandL_list[i]
+                    week2_roi_sum+=Week2PandL_list[i]
+                    week4_roi_sum+=Week4PandL_list[i]
+                    week8_roi_sum+=Week8PandL_list[i]
+                    week12_roi_sum+=Week12PandL_list[i]
+                    week24_roi_sum+=Week24PandL_list[i]
+
+                    TwoHundMovingAverageSum+= TwoHundMovingAverage[i]
+                    TwentyMovingAverageSum+= TwentyMovingAverage[i]
+                    ThreeMonthPercentGainSum+=ThreeMonthPercentGain[i]
+                    StandardDeviationWithMarketSum+= StandardDeviationWithMarketSum[i]
+                    StandardDeviationSum+= StandardDeviation[i]
+                    PercentageLagSum+= PercentageLag
+                    OneMonthPercentGainSum+= OneMonthPercentGain[i]
+                    MultipleSum+=Multiple[i]
+                    InvestmentRankSum+= InvestmentRank[i]
+                    IndPriceSum+= IndPrice[i]
+                    IndGrowth2Sum += IndGrowth2[i]
+                    IndGrowth12Sum += IndGrowth12[i]
+                    IndGrowth1Sum+= IndGrowth1[i]
+                    FourWeekLowSum+= FourWeekLow[i]
+                    FourWeekHighSum+= FourWeekHigh[i]
+                    FiftyMovingAverageSum+= FiftyMovingAverage[i]
+                    Fifty2WeekLowSum+= Fifty2WeekLow[i]
+                    Fifty2WeekHighSum+=Fifty2WeekHigh[i]
+                    Fifty2WeekChangeSum+= Fifty2WeekChange[i]
+                    AvgVol3MonthsSum+= AvgVol3Months[i]
+                    AvgVol1MonthSum+= AvgVol1Month[i]
+                    AvgVol10DaysSum+= AvgVol10Days[i]
+
+
+                    if(Week1PandL_list[i]>0){
+                        week1_pos_roi_sum+=Week1PandL_list[i]
+                        week1_pos_close_sum+=close_list_all[i]
+                    }else if(Week1PandL_list[i]<0){
+                        week1_neg_roi_sum+=Week1PandL_list[i]
+                        week1_neg_close_sum+=close_list_all[i]
+                    }
+
+                    if(Week2PandL_list[i]>0){
+                        week2_pos_roi_sum+=Week2PandL_list[i]
+                        week2_pos_close_sum+=close_list_all[i]
+                    }else if(Week2PandL_list[i]<0){
+                        week2_neg_roi_sum+=Week2PandL_list[i]
+                        week2_neg_close_sum+=close_list_all[i]
+                    }
+
+                    if(Week4PandL_list[i]>0){
+                        week4_pos_roi_sum+=Week4PandL_list[i]
+                        week4_pos_close_sum+=close_list_all[i]
+                    }else if(Week4PandL_list[i]<0){
+                        week4_neg_roi_sum+=Week4PandL_list[i]
+                        week4_neg_close_sum+=close_list_all[i]
+                    }
+
+                    if(Week8PandL_list[i]>0){
+                        week8_pos_roi_sum+=Week8PandL_list[i]
+                        week8_pos_close_sum+=close_list_all[i]
+                    }else if(Week8PandL_list[i]<0){
+                        week8_neg_roi_sum+=Week8PandL_list[i]
+                        week8_neg_close_sum+=close_list_all[i]
+                    }
+
+                    if(Week12PandL_list[i]>0){
+                        week12_pos_roi_sum+=Week12PandL_list[i]
+                        week12_pos_close_sum+=close_list_all[i]
+                    }else if(Week12PandL_list[i]<0){
+                        week12_neg_roi_sum+=Week12PandL_list[i]
+                        week12_neg_close_sum+=close_list_all[i]
+                    }
+
+                    if(Week24PandL_list[i]>0){
+                        week24_pos_roi_sum+=Week24PandL_list[i]
+                        week24_pos_close_sum+=close_list_all[i]
+                    }else if(Week24PandL_list[i]<0){
+                        week24_neg_roi_sum+=Week24PandL_list[i]
+                        week24_neg_close_sum+=close_list_all[i]
+                    }
+
+
+            }
+
+           
+            }else if(sector_value=="all" && week_value=="all" && code_value!="all"){
+                console.log(code_value)
+                for(i=0;i<codes_all.length;i++){
+                    if(codes_all[i]==code_value){
+                    close_value_sum+=close_list_all[i]                    
+
+                    week1_roi_sum+=Week1PandL_list[i]
+                    week2_roi_sum+=Week2PandL_list[i]
+                    week4_roi_sum+=Week4PandL_list[i]
+                    week8_roi_sum+=Week8PandL_list[i]
+                    week12_roi_sum+=Week12PandL_list[i]
+                    week24_roi_sum+=Week24PandL_list[i]
+
+                    TwoHundMovingAverageSum+= TwoHundMovingAverage[i]
+                    TwentyMovingAverageSum+= TwentyMovingAverage[i]
+                    ThreeMonthPercentGainSum+=ThreeMonthPercentGain[i]
+                    StandardDeviationWithMarketSum+= StandardDeviationWithMarketSum[i]
+                    StandardDeviationSum+= StandardDeviation[i]
+                    PercentageLagSum+= PercentageLag
+                    OneMonthPercentGainSum+= OneMonthPercentGain[i]
+                    MultipleSum+=Multiple[i]
+                    InvestmentRankSum+= InvestmentRank[i]
+                    IndPriceSum+= IndPrice[i]
+                    IndGrowth2Sum += IndGrowth2[i]
+                    IndGrowth12Sum += IndGrowth12[i]
+                    IndGrowth1Sum+= IndGrowth1[i]
+                    FourWeekLowSum+= FourWeekLow[i]
+                    FourWeekHighSum+= FourWeekHigh[i]
+                    FiftyMovingAverageSum+= FiftyMovingAverage[i]
+                    Fifty2WeekLowSum+= Fifty2WeekLow[i]
+                    Fifty2WeekHighSum+=Fifty2WeekHigh[i]
+                    Fifty2WeekChangeSum+= Fifty2WeekChange[i]
+                    AvgVol3MonthsSum+= AvgVol3Months[i]
+                    AvgVol1MonthSum+= AvgVol1Month[i]
+                    AvgVol10DaysSum+= AvgVol10Days[i]
+
+
+                    if(Week1PandL_list[i]>0){
+                        week1_pos_roi_sum+=Week1PandL_list[i]
+                        week1_pos_close_sum+=close_list_all[i]
+                    }else if(Week1PandL_list[i]<0){
+                        week1_neg_roi_sum+=Week1PandL_list[i]
+                        week1_neg_close_sum+=close_list_all[i]
+                    }
+
+                    if(Week2PandL_list[i]>0){
+                        week2_pos_roi_sum+=Week2PandL_list[i]
+                        week2_pos_close_sum+=close_list_all[i]
+                    }else if(Week2PandL_list[i]<0){
+                        week2_neg_roi_sum+=Week2PandL_list[i]
+                        week2_neg_close_sum+=close_list_all[i]
+                    }
+
+                    if(Week4PandL_list[i]>0){
+                        week4_pos_roi_sum+=Week4PandL_list[i]
+                        week4_pos_close_sum+=close_list_all[i]
+                    }else if(Week4PandL_list[i]<0){
+                        week4_neg_roi_sum+=Week4PandL_list[i]
+                        week4_neg_close_sum+=close_list_all[i]
+                    }
+
+                    if(Week8PandL_list[i]>0){
+                        week8_pos_roi_sum+=Week8PandL_list[i]
+                        week8_pos_close_sum+=close_list_all[i]
+                    }else if(Week8PandL_list[i]<0){
+                        week8_neg_roi_sum+=Week8PandL_list[i]
+                        week8_neg_close_sum+=close_list_all[i]
+                    }
+
+                    if(Week12PandL_list[i]>0){
+                        week12_pos_roi_sum+=Week12PandL_list[i]
+                        week12_pos_close_sum+=close_list_all[i]
+                    }else if(Week12PandL_list[i]<0){
+                        week12_neg_roi_sum+=Week12PandL_list[i]
+                        week12_neg_close_sum+=close_list_all[i]
+                    }
+
+                    if(Week24PandL_list[i]>0){
+                        week24_pos_roi_sum+=Week24PandL_list[i]
+                        week24_pos_close_sum+=close_list_all[i]
+                    }else if(Week24PandL_list[i]<0){
+                        week24_neg_roi_sum+=Week24PandL_list[i]
+                        week24_neg_close_sum+=close_list_all[i]
+                    }
+
+                    }
+                    }
+
+                    }
+        else if(sector_value=="all" && week_value!="all" && code_value=="all"){
+                    console.log(week_value)
+                    for(i=0;i<codes_all.length;i++){
+                    if(start_dates_all[i]+" to "+ end_dates_all[i] ==week_value){
+                    close_value_sum+=close_list_all[i]                    
+
+                    week1_roi_sum+=Week1PandL_list[i]
+                    week2_roi_sum+=Week2PandL_list[i]
+                    week4_roi_sum+=Week4PandL_list[i]
+                    week8_roi_sum+=Week8PandL_list[i]
+                    week12_roi_sum+=Week12PandL_list[i]
+                    week24_roi_sum+=Week24PandL_list[i]
+
+                    TwoHundMovingAverageSum+= TwoHundMovingAverage[i]
+                    TwentyMovingAverageSum+= TwentyMovingAverage[i]
+                    ThreeMonthPercentGainSum+=ThreeMonthPercentGain[i]
+                    StandardDeviationWithMarketSum+= StandardDeviationWithMarketSum[i]
+                    StandardDeviationSum+= StandardDeviation[i]
+                    PercentageLagSum+= PercentageLag
+                    OneMonthPercentGainSum+= OneMonthPercentGain[i]
+                    MultipleSum+=Multiple[i]
+                    InvestmentRankSum+= InvestmentRank[i]
+                    IndPriceSum+= IndPrice[i]
+                    IndGrowth2Sum += IndGrowth2[i]
+                    IndGrowth12Sum += IndGrowth12[i]
+                    IndGrowth1Sum+= IndGrowth1[i]
+                    FourWeekLowSum+= FourWeekLow[i]
+                    FourWeekHighSum+= FourWeekHigh[i]
+                    FiftyMovingAverageSum+= FiftyMovingAverage[i]
+                    Fifty2WeekLowSum+= Fifty2WeekLow[i]
+                    Fifty2WeekHighSum+=Fifty2WeekHigh[i]
+                    Fifty2WeekChangeSum+= Fifty2WeekChange[i]
+                    AvgVol3MonthsSum+= AvgVol3Months[i]
+                    AvgVol1MonthSum+= AvgVol1Month[i]
+                    AvgVol10DaysSum+= AvgVol10Days[i]
+
+
+                    if(Week1PandL_list[i]>0){
+                        week1_pos_roi_sum+=Week1PandL_list[i]
+                        week1_pos_close_sum+=close_list_all[i]
+                    }else if(Week1PandL_list[i]<0){
+                        week1_neg_roi_sum+=Week1PandL_list[i]
+                        week1_neg_close_sum+=close_list_all[i]
+                    }
+
+                    if(Week2PandL_list[i]>0){
+                        week2_pos_roi_sum+=Week2PandL_list[i]
+                        week2_pos_close_sum+=close_list_all[i]
+                    }else if(Week2PandL_list[i]<0){
+                        week2_neg_roi_sum+=Week2PandL_list[i]
+                        week2_neg_close_sum+=close_list_all[i]
+                    }
+
+                    if(Week4PandL_list[i]>0){
+                        week4_pos_roi_sum+=Week4PandL_list[i]
+                        week4_pos_close_sum+=close_list_all[i]
+                    }else if(Week4PandL_list[i]<0){
+                        week4_neg_roi_sum+=Week4PandL_list[i]
+                        week4_neg_close_sum+=close_list_all[i]
+                    }
+
+                    if(Week8PandL_list[i]>0){
+                        week8_pos_roi_sum+=Week8PandL_list[i]
+                        week8_pos_close_sum+=close_list_all[i]
+                    }else if(Week8PandL_list[i]<0){
+                        week8_neg_roi_sum+=Week8PandL_list[i]
+                        week8_neg_close_sum+=close_list_all[i]
+                    }
+
+                    if(Week12PandL_list[i]>0){
+                        week12_pos_roi_sum+=Week12PandL_list[i]
+                        week12_pos_close_sum+=close_list_all[i]
+                    }else if(Week12PandL_list[i]<0){
+                        week12_neg_roi_sum+=Week12PandL_list[i]
+                        week12_neg_close_sum+=close_list_all[i]
+                    }
+
+                    if(Week24PandL_list[i]>0){
+                        week24_pos_roi_sum+=Week24PandL_list[i]
+                        week24_pos_close_sum+=close_list_all[i]
+                    }else if(Week24PandL_list[i]<0){
+                        week24_neg_roi_sum+=Week24PandL_list[i]
+                        week24_neg_close_sum+=close_list_all[i]
+                    }
+
+                    }
+                }
+                   
+
+            }
+            else if(sector_value!="all" && week_value=="all" && code_value=="all"){
+                console.log(sector_value)
+                for(i=0;i<sectors_all.length;i++){
+                    if(sectors_all[i] ==sector_value){
+                    close_value_sum+=close_list_all[i]                    
+
+                    week1_roi_sum+=Week1PandL_list[i]
+                    week2_roi_sum+=Week2PandL_list[i]
+                    week4_roi_sum+=Week4PandL_list[i]
+                    week8_roi_sum+=Week8PandL_list[i]
+                    week12_roi_sum+=Week12PandL_list[i]
+                    week24_roi_sum+=Week24PandL_list[i]
+
+                    TwoHundMovingAverageSum+= TwoHundMovingAverage[i]
+                    TwentyMovingAverageSum+= TwentyMovingAverage[i]
+                    ThreeMonthPercentGainSum+=ThreeMonthPercentGain[i]
+                    StandardDeviationWithMarketSum+= StandardDeviationWithMarketSum[i]
+                    StandardDeviationSum+= StandardDeviation[i]
+                    PercentageLagSum+= PercentageLag
+                    OneMonthPercentGainSum+= OneMonthPercentGain[i]
+                    MultipleSum+=Multiple[i]
+                    InvestmentRankSum+= InvestmentRank[i]
+                    IndPriceSum+= IndPrice[i]
+                    IndGrowth2Sum += IndGrowth2[i]
+                    IndGrowth12Sum += IndGrowth12[i]
+                    IndGrowth1Sum+= IndGrowth1[i]
+                    FourWeekLowSum+= FourWeekLow[i]
+                    FourWeekHighSum+= FourWeekHigh[i]
+                    FiftyMovingAverageSum+= FiftyMovingAverage[i]
+                    Fifty2WeekLowSum+= Fifty2WeekLow[i]
+                    Fifty2WeekHighSum+=Fifty2WeekHigh[i]
+                    Fifty2WeekChangeSum+= Fifty2WeekChange[i]
+                    AvgVol3MonthsSum+= AvgVol3Months[i]
+                    AvgVol1MonthSum+= AvgVol1Month[i]
+                    AvgVol10DaysSum+= AvgVol10Days[i]
+
+
+                    if(Week1PandL_list[i]>0){
+                        week1_pos_roi_sum+=Week1PandL_list[i]
+                        week1_pos_close_sum+=close_list_all[i]
+                    }else if(Week1PandL_list[i]<0){
+                        week1_neg_roi_sum+=Week1PandL_list[i]
+                        week1_neg_close_sum+=close_list_all[i]
+                    }
+
+                    if(Week2PandL_list[i]>0){
+                        week2_pos_roi_sum+=Week2PandL_list[i]
+                        week2_pos_close_sum+=close_list_all[i]
+                    }else if(Week2PandL_list[i]<0){
+                        week2_neg_roi_sum+=Week2PandL_list[i]
+                        week2_neg_close_sum+=close_list_all[i]
+                    }
+
+                    if(Week4PandL_list[i]>0){
+                        week4_pos_roi_sum+=Week4PandL_list[i]
+                        week4_pos_close_sum+=close_list_all[i]
+                    }else if(Week4PandL_list[i]<0){
+                        week4_neg_roi_sum+=Week4PandL_list[i]
+                        week4_neg_close_sum+=close_list_all[i]
+                    }
+
+                    if(Week8PandL_list[i]>0){
+                        week8_pos_roi_sum+=Week8PandL_list[i]
+                        week8_pos_close_sum+=close_list_all[i]
+                    }else if(Week8PandL_list[i]<0){
+                        week8_neg_roi_sum+=Week8PandL_list[i]
+                        week8_neg_close_sum+=close_list_all[i]
+                    }
+
+                    if(Week12PandL_list[i]>0){
+                        week12_pos_roi_sum+=Week12PandL_list[i]
+                        week12_pos_close_sum+=close_list_all[i]
+                    }else if(Week12PandL_list[i]<0){
+                        week12_neg_roi_sum+=Week12PandL_list[i]
+                        week12_neg_close_sum+=close_list_all[i]
+                    }
+
+                    if(Week24PandL_list[i]>0){
+                        week24_pos_roi_sum+=Week24PandL_list[i]
+                        week24_pos_close_sum+=close_list_all[i]
+                    }else if(Week24PandL_list[i]<0){
+                        week24_neg_roi_sum+=Week24PandL_list[i]
+                        week24_neg_close_sum+=close_list_all[i]
+                    }
+                    }
+                }
+
+            }
+
+            else if(sector_value!="all" && week_value!="all" && code_value=="all"){
+                console.log(sector_value,week_value)
+                for(i=0;i<sectors_all.length;i++){
+                    if(sectors_all[i] ==sector_value && start_dates_all[i]+" to "+ end_dates_all[i]==week_value){
+                        close_value_sum+=close_list_all[i]   
+
+
+
+
+                    week1_roi_sum+=Week1PandL_list[i]
+                    week2_roi_sum+=Week2PandL_list[i]
+                    week4_roi_sum+=Week4PandL_list[i]
+                    week8_roi_sum+=Week8PandL_list[i]
+                    week12_roi_sum+=Week12PandL_list[i]
+                    week24_roi_sum+=Week24PandL_list[i]
+
+                    TwoHundMovingAverageSum+= TwoHundMovingAverage[i]
+                    TwentyMovingAverageSum+= TwentyMovingAverage[i]
+                    ThreeMonthPercentGainSum+=ThreeMonthPercentGain[i]
+                    StandardDeviationWithMarketSum+= StandardDeviationWithMarketSum[i]
+                    StandardDeviationSum+= StandardDeviation[i]
+                    PercentageLagSum+= PercentageLag
+                    OneMonthPercentGainSum+= OneMonthPercentGain[i]
+                    MultipleSum+=Multiple[i]
+                    InvestmentRankSum+= InvestmentRank[i]
+                    IndPriceSum+= IndPrice[i]
+                    IndGrowth2Sum += IndGrowth2[i]
+                    IndGrowth12Sum += IndGrowth12[i]
+                    IndGrowth1Sum+= IndGrowth1[i]
+                    FourWeekLowSum+= FourWeekLow[i]
+                    FourWeekHighSum+= FourWeekHigh[i]
+                    FiftyMovingAverageSum+= FiftyMovingAverage[i]
+                    Fifty2WeekLowSum+= Fifty2WeekLow[i]
+                    Fifty2WeekHighSum+=Fifty2WeekHigh[i]
+                    Fifty2WeekChangeSum+= Fifty2WeekChange[i]
+                    AvgVol3MonthsSum+= AvgVol3Months[i]
+                    AvgVol1MonthSum+= AvgVol1Month[i]
+                    AvgVol10DaysSum+= AvgVol10Days[i]
+
+
+                    if(Week1PandL_list[i]>0){
+                        week1_pos_roi_sum+=Week1PandL_list[i]
+                        week1_pos_close_sum+=close_list_all[i]
+                    }else if(Week1PandL_list[i]<0){
+                        week1_neg_roi_sum+=Week1PandL_list[i]
+                        week1_neg_close_sum+=close_list_all[i]
+                    }
+
+                    if(Week2PandL_list[i]>0){
+                        week2_pos_roi_sum+=Week2PandL_list[i]
+                        week2_pos_close_sum+=close_list_all[i]
+                    }else if(Week2PandL_list[i]<0){
+                        week2_neg_roi_sum+=Week2PandL_list[i]
+                        week2_neg_close_sum+=close_list_all[i]
+                    }
+
+                    if(Week4PandL_list[i]>0){
+                        week4_pos_roi_sum+=Week4PandL_list[i]
+                        week4_pos_close_sum+=close_list_all[i]
+                    }else if(Week4PandL_list[i]<0){
+                        week4_neg_roi_sum+=Week4PandL_list[i]
+                        week4_neg_close_sum+=close_list_all[i]
+                    }
+
+                    if(Week8PandL_list[i]>0){
+                        week8_pos_roi_sum+=Week8PandL_list[i]
+                        week8_pos_close_sum+=close_list_all[i]
+                    }else if(Week8PandL_list[i]<0){
+                        week8_neg_roi_sum+=Week8PandL_list[i]
+                        week8_neg_close_sum+=close_list_all[i]
+                    }
+
+                    if(Week12PandL_list[i]>0){
+                        week12_pos_roi_sum+=Week12PandL_list[i]
+                        week12_pos_close_sum+=close_list_all[i]
+                    }else if(Week12PandL_list[i]<0){
+                        week12_neg_roi_sum+=Week12PandL_list[i]
+                        week12_neg_close_sum+=close_list_all[i]
+                    }
+
+                    if(Week24PandL_list[i]>0){
+                        week24_pos_roi_sum+=Week24PandL_list[i]
+                        week24_pos_close_sum+=close_list_all[i]
+                    }else if(Week24PandL_list[i]<0){
+                        week24_neg_roi_sum+=Week24PandL_list[i]
+                        week24_neg_close_sum+=close_list_all[i]
+                    }
+                    }
+                }
+
+
+            }
+
+            else if(sector_value=="all" && week_value!="all" && code_value!="all"){
+                console.log(week_value,code_value)
+                for(i=0;i<sectors_all.length;i++){
+                    if(codes_all[i] ==code_value && start_dates_all[i]+" to "+ end_dates_all[i]==week_value){
+                        close_value_sum+=close_list_all[i]                    
+
+                        week1_roi_sum+=Week1PandL_list[i]
+                        week2_roi_sum+=Week2PandL_list[i]
+                        week4_roi_sum+=Week4PandL_list[i]
+                        week8_roi_sum+=Week8PandL_list[i]
+                        week12_roi_sum+=Week12PandL_list[i]
+                        week24_roi_sum+=Week24PandL_list[i]
+
+                        TwoHundMovingAverageSum+= TwoHundMovingAverage[i]
+                        TwentyMovingAverageSum+= TwentyMovingAverage[i]
+                        ThreeMonthPercentGainSum+=ThreeMonthPercentGain[i]
+                        StandardDeviationWithMarketSum+= StandardDeviationWithMarketSum[i]
+                        StandardDeviationSum+= StandardDeviation[i]
+                        PercentageLagSum+= PercentageLag
+                        OneMonthPercentGainSum+= OneMonthPercentGain[i]
+                        MultipleSum+=Multiple[i]
+                        InvestmentRankSum+= InvestmentRank[i]
+                        IndPriceSum+= IndPrice[i]
+                        IndGrowth2Sum += IndGrowth2[i]
+                        IndGrowth12Sum += IndGrowth12[i]
+                        IndGrowth1Sum+= IndGrowth1[i]
+                        FourWeekLowSum+= FourWeekLow[i]
+                        FourWeekHighSum+= FourWeekHigh[i]
+                        FiftyMovingAverageSum+= FiftyMovingAverage[i]
+                        Fifty2WeekLowSum+= Fifty2WeekLow[i]
+                        Fifty2WeekHighSum+=Fifty2WeekHigh[i]
+                        Fifty2WeekChangeSum+= Fifty2WeekChange[i]
+                        AvgVol3MonthsSum+= AvgVol3Months[i]
+                        AvgVol1MonthSum+= AvgVol1Month[i]
+                        AvgVol10DaysSum+= AvgVol10Days[i]
+
+
+                        if(Week1PandL_list[i]>0){
+                            week1_pos_roi_sum+=Week1PandL_list[i]
+                            week1_pos_close_sum+=close_list_all[i]
+                        }else if(Week1PandL_list[i]<0){
+                            week1_neg_roi_sum+=Week1PandL_list[i]
+                            week1_neg_close_sum+=close_list_all[i]
+                        }
+
+                        if(Week2PandL_list[i]>0){
+                            week2_pos_roi_sum+=Week2PandL_list[i]
+                            week2_pos_close_sum+=close_list_all[i]
+                        }else if(Week2PandL_list[i]<0){
+                            week2_neg_roi_sum+=Week2PandL_list[i]
+                            week2_neg_close_sum+=close_list_all[i]
+                        }
+
+                        if(Week4PandL_list[i]>0){
+                            week4_pos_roi_sum+=Week4PandL_list[i]
+                            week4_pos_close_sum+=close_list_all[i]
+                        }else if(Week4PandL_list[i]<0){
+                            week4_neg_roi_sum+=Week4PandL_list[i]
+                            week4_neg_close_sum+=close_list_all[i]
+                        }
+
+                        if(Week8PandL_list[i]>0){
+                            week8_pos_roi_sum+=Week8PandL_list[i]
+                            week8_pos_close_sum+=close_list_all[i]
+                        }else if(Week8PandL_list[i]<0){
+                            week8_neg_roi_sum+=Week8PandL_list[i]
+                            week8_neg_close_sum+=close_list_all[i]
+                        }
+
+                        if(Week12PandL_list[i]>0){
+                            week12_pos_roi_sum+=Week12PandL_list[i]
+                            week12_pos_close_sum+=close_list_all[i]
+                        }else if(Week12PandL_list[i]<0){
+                            week12_neg_roi_sum+=Week12PandL_list[i]
+                            week12_neg_close_sum+=close_list_all[i]
+                        }
+
+                        if(Week24PandL_list[i]>0){
+                            week24_pos_roi_sum+=Week24PandL_list[i]
+                            week24_pos_close_sum+=close_list_all[i]
+                        }else if(Week24PandL_list[i]<0){
+                            week24_neg_roi_sum+=Week24PandL_list[i]
+                            week24_neg_close_sum+=close_list_all[i]
+                        }
+                    }
+                }
+
+            }
+            
+            else if(sector_value!="all" && week_value=="all" && code_value!="all"){
+                console.log(code_value,sector_value)
+                for(i=0;i<sectors_all.length;i++){
+                    if(codes_all[i] ==code_value && sectors_all[i]==sector_value){
+                        close_value_sum+=close_list_all[i]                    
+
+                        week1_roi_sum+=Week1PandL_list[i]
+                        week2_roi_sum+=Week2PandL_list[i]
+                        week4_roi_sum+=Week4PandL_list[i]
+                        week8_roi_sum+=Week8PandL_list[i]
+                        week12_roi_sum+=Week12PandL_list[i]
+                        week24_roi_sum+=Week24PandL_list[i]
+
+                        TwoHundMovingAverageSum+= TwoHundMovingAverage[i]
+                        TwentyMovingAverageSum+= TwentyMovingAverage[i]
+                        ThreeMonthPercentGainSum+=ThreeMonthPercentGain[i]
+                        StandardDeviationWithMarketSum+= StandardDeviationWithMarketSum[i]
+                        StandardDeviationSum+= StandardDeviation[i]
+                        PercentageLagSum+= PercentageLag
+                        OneMonthPercentGainSum+= OneMonthPercentGain[i]
+                        MultipleSum+=Multiple[i]
+                        InvestmentRankSum+= InvestmentRank[i]
+                        IndPriceSum+= IndPrice[i]
+                        IndGrowth2Sum += IndGrowth2[i]
+                        IndGrowth12Sum += IndGrowth12[i]
+                        IndGrowth1Sum+= IndGrowth1[i]
+                        FourWeekLowSum+= FourWeekLow[i]
+                        FourWeekHighSum+= FourWeekHigh[i]
+                        FiftyMovingAverageSum+= FiftyMovingAverage[i]
+                        Fifty2WeekLowSum+= Fifty2WeekLow[i]
+                        Fifty2WeekHighSum+=Fifty2WeekHigh[i]
+                        Fifty2WeekChangeSum+= Fifty2WeekChange[i]
+                        AvgVol3MonthsSum+= AvgVol3Months[i]
+                        AvgVol1MonthSum+= AvgVol1Month[i]
+                        AvgVol10DaysSum+= AvgVol10Days[i]
+
+
+                        if(Week1PandL_list[i]>0){
+                            week1_pos_roi_sum+=Week1PandL_list[i]
+                            week1_pos_close_sum+=close_list_all[i]
+                        }else if(Week1PandL_list[i]<0){
+                            week1_neg_roi_sum+=Week1PandL_list[i]
+                            week1_neg_close_sum+=close_list_all[i]
+                        }
+
+                        if(Week2PandL_list[i]>0){
+                            week2_pos_roi_sum+=Week2PandL_list[i]
+                            week2_pos_close_sum+=close_list_all[i]
+                        }else if(Week2PandL_list[i]<0){
+                            week2_neg_roi_sum+=Week2PandL_list[i]
+                            week2_neg_close_sum+=close_list_all[i]
+                        }
+
+                        if(Week4PandL_list[i]>0){
+                            week4_pos_roi_sum+=Week4PandL_list[i]
+                            week4_pos_close_sum+=close_list_all[i]
+                        }else if(Week4PandL_list[i]<0){
+                            week4_neg_roi_sum+=Week4PandL_list[i]
+                            week4_neg_close_sum+=close_list_all[i]
+                        }
+
+                        if(Week8PandL_list[i]>0){
+                            week8_pos_roi_sum+=Week8PandL_list[i]
+                            week8_pos_close_sum+=close_list_all[i]
+                        }else if(Week8PandL_list[i]<0){
+                            week8_neg_roi_sum+=Week8PandL_list[i]
+                            week8_neg_close_sum+=close_list_all[i]
+                        }
+
+                        if(Week12PandL_list[i]>0){
+                            week12_pos_roi_sum+=Week12PandL_list[i]
+                            week12_pos_close_sum+=close_list_all[i]
+                        }else if(Week12PandL_list[i]<0){
+                            week12_neg_roi_sum+=Week12PandL_list[i]
+                            week12_neg_close_sum+=close_list_all[i]
+                        }
+
+                        if(Week24PandL_list[i]>0){
+                            week24_pos_roi_sum+=Week24PandL_list[i]
+                            week24_pos_close_sum+=close_list_all[i]
+                        }else if(Week24PandL_list[i]<0){
+                            week24_neg_roi_sum+=Week24PandL_list[i]
+                            week24_neg_close_sum+=close_list_all[i]
+                        }
+                    }
+                }
+
+            }
+            else if(sector_value!="all" && week_value!="all" && code_value!="all"){
+                console.log(week_value,code_value)
+                for(i=0;i<sectors_all.length;i++){
+
+                if(codes_all[i] ==code_value && start_dates_all[i]+" to "+ end_dates_all[i]==week_value && sector_value==sectors_all[i]){
+                    close_value_sum+=close_list_all[i]                    
+
+                        week1_roi_sum+=Week1PandL_list[i]
+                        week2_roi_sum+=Week2PandL_list[i]
+                        week4_roi_sum+=Week4PandL_list[i]
+                        week8_roi_sum+=Week8PandL_list[i]
+                        week12_roi_sum+=Week12PandL_list[i]
+                        week24_roi_sum+=Week24PandL_list[i]
+
+                        TwoHundMovingAverageSum+= TwoHundMovingAverage[i]
+                    TwentyMovingAverageSum+= TwentyMovingAverage[i]
+                    ThreeMonthPercentGainSum+=ThreeMonthPercentGain[i]
+                    StandardDeviationWithMarketSum+= StandardDeviationWithMarketSum[i]
+                    StandardDeviationSum+= StandardDeviation[i]
+                    PercentageLagSum+= PercentageLag
+                    OneMonthPercentGainSum+= OneMonthPercentGain[i]
+                    MultipleSum+=Multiple[i]
+                    InvestmentRankSum+= InvestmentRank[i]
+                    IndPriceSum+= IndPrice[i]
+                    IndGrowth2Sum += IndGrowth2[i]
+                    IndGrowth12Sum += IndGrowth12[i]
+                    IndGrowth1Sum+= IndGrowth1[i]
+                    FourWeekLowSum+= FourWeekLow[i]
+                    FourWeekHighSum+= FourWeekHigh[i]
+                    FiftyMovingAverageSum+= FiftyMovingAverage[i]
+                    Fifty2WeekLowSum+= Fifty2WeekLow[i]
+                    Fifty2WeekHighSum+=Fifty2WeekHigh[i]
+                    Fifty2WeekChangeSum+= Fifty2WeekChange[i]
+                    AvgVol3MonthsSum+= AvgVol3Months[i]
+                    AvgVol1MonthSum+= AvgVol1Month[i]
+                    AvgVol10DaysSum+= AvgVol10Days[i]
+
+
+                        if(Week1PandL_list[i]>0){
+                            week1_pos_roi_sum+=Week1PandL_list[i]
+                            week1_pos_close_sum+=close_list_all[i]
+                        }else if(Week1PandL_list[i]<0){
+                            week1_neg_roi_sum+=Week1PandL_list[i]
+                            week1_neg_close_sum+=close_list_all[i]
+                        }
+
+                        if(Week2PandL_list[i]>0){
+                            week2_pos_roi_sum+=Week2PandL_list[i]
+                            week2_pos_close_sum+=close_list_all[i]
+                        }else if(Week2PandL_list[i]<0){
+                            week2_neg_roi_sum+=Week2PandL_list[i]
+                            week2_neg_close_sum+=close_list_all[i]
+                        }
+
+                        if(Week4PandL_list[i]>0){
+                            week4_pos_roi_sum+=Week4PandL_list[i]
+                            week4_pos_close_sum+=close_list_all[i]
+                        }else if(Week4PandL_list[i]<0){
+                            week4_neg_roi_sum+=Week4PandL_list[i]
+                            week4_neg_close_sum+=close_list_all[i]
+                        }
+
+                        if(Week8PandL_list[i]>0){
+                            week8_pos_roi_sum+=Week8PandL_list[i]
+                            week8_pos_close_sum+=close_list_all[i]
+                        }else if(Week8PandL_list[i]<0){
+                            week8_neg_roi_sum+=Week8PandL_list[i]
+                            week8_neg_close_sum+=close_list_all[i]
+                        }
+
+                        if(Week12PandL_list[i]>0){
+                            week12_pos_roi_sum+=Week12PandL_list[i]
+                            week12_pos_close_sum+=close_list_all[i]
+                        }else if(Week12PandL_list[i]<0){
+                            week12_neg_roi_sum+=Week12PandL_list[i]
+                            week12_neg_close_sum+=close_list_all[i]
+                        }
+
+                        if(Week24PandL_list[i]>0){
+                            week24_pos_roi_sum+=Week24PandL_list[i]
+                            week24_pos_close_sum+=close_list_all[i]
+                        }else if(Week24PandL_list[i]<0){
+                            week24_neg_roi_sum+=Week24PandL_list[i]
+                            week24_neg_close_sum+=close_list_all[i]
+                        }
+                }
+                }   
+
+                }    
+            
+            console.log("ROI values: ",week1_roi_sum,week2_roi_sum,week4_roi_sum,week8_roi_sum,week12_roi_sum,week24_roi_sum)
+            console.log("ROI percentage: ",week1_roi_sum*100/close_value_sum,week2_roi_sum*100/close_value_sum,week4_roi_sum*100/close_value_sum,week8_roi_sum*100/close_value_sum,week12_roi_sum*100/close_value_sum,week24_roi_sum*100/close_value_sum)
+            console.log("ROI Win vs Loss $ values: ",week1_pos_roi_sum/week1_neg_roi_sum*-1,week2_pos_roi_sum/week2_neg_roi_sum*-1,week4_pos_roi_sum/week4_neg_roi_sum*-1,week8_pos_roi_sum/week8_neg_roi_sum*-1,week12_pos_roi_sum/week12_neg_roi_sum*-1,week24_pos_roi_sum/week24_neg_roi_sum*-1)
+            console.log("ROI Win vs Loss % values Week1: ",(week1_pos_roi_sum*week1_neg_close_sum)/(week1_pos_close_sum*week1_neg_roi_sum)*-1)
+            console.log("ROI Win vs Loss % values Week2: ", (week2_pos_roi_sum*week2_neg_close_sum)/(week2_pos_close_sum*week2_neg_roi_sum)*-1)
+            console.log("ROI Win vs Loss % values Week4: ", (week4_pos_roi_sum*week4_neg_close_sum)/(week4_pos_close_sum*week4_neg_roi_sum)*-1)
+            console.log("ROI Win vs Loss % values Week8: ", (week8_pos_roi_sum*week8_neg_close_sum)/(week8_pos_close_sum*week8_neg_roi_sum)*-1)
+            console.log("ROI Win vs Loss % values Week12: ", (week12_pos_roi_sum*week12_neg_close_sum)/(week12_pos_close_sum*week12_neg_roi_sum)*-1)
+            console.log("ROI Win vs Loss % values Week24: ", (week24_pos_roi_sum*week24_neg_close_sum)/(week24_pos_close_sum*week24_neg_roi_sum)*-1)
+            
+            var chart1 = new CanvasJS.Chart("chartContainer1", {
+                    title:{
+                        text: "Weekly ROI $"              
+                    },
+                    data: [              
+                    {
+                        // Change type to "doughnut", "line", "splineArea", etc.
+                        type: "column",
+                        dataPoints: [
+                            { label: "Week1",  y: week1_roi_sum  },
+                            { label: "Week2", y: week2_roi_sum  },
+                            { label: "Week4", y: week4_roi_sum  },
+                            { label: "Week8",  y: week8_roi_sum  },
+                            { label: "Week12",  y: week12_roi_sum  },
+                            { label: "Week24",  y: week24_roi_sum  }
+                        ]
+                    }
+                    ]
+                });
+
+                var chart2 = new CanvasJS.Chart("chartContainer2", {
+                    title:{
+                        text: "Weekly ROI %"              
+                    },
+                    data: [              
+                    {
+                        // Change type to "doughnut", "line", "splineArea", etc.
+                    
+
+                        type: "column",
+                        dataPoints: [
+                            { label: "Week1",  y: week1_roi_sum*100/close_value_sum  },
+                            { label: "Week2", y: week2_roi_sum*100/close_value_sum  },
+                            { label: "Week4", y: week4_roi_sum*100/close_value_sum  },
+                            { label: "Week8",  y: week8_roi_sum*100/close_value_sum  },
+                            { label: "Week12",  y: week12_roi_sum*100/close_value_sum  },
+                            { label: "Week24",  y: week24_roi_sum*100/close_value_sum  }
+                        ]
+                    }
+                    ]
+                });
+
+                var chart3 = new CanvasJS.Chart("chartContainer3", {
+                    title:{
+                        text: "Win ROI $ vs Loss ROI $"              
+                    },
+                    data: [              
+                    {
+                        // Change type to "doughnut", "line", "splineArea", etc.
+                        type: "column",
+                        dataPoints: [
+                            { label: "Week1",  y:  week1_pos_roi_sum/week1_neg_roi_sum*-1  },
+                            { label: "Week2", y: week2_pos_roi_sum/week2_neg_roi_sum*-1  },
+                            { label: "Week4", y: week4_pos_roi_sum/week4_neg_roi_sum*-1  },
+                            { label: "Week8",  y: week8_pos_roi_sum/week8_neg_roi_sum*-1  },
+                            { label: "Week12",  y: week12_pos_roi_sum/week12_neg_roi_sum*-1  },
+                            { label: "Week24",  y: week24_pos_roi_sum/week24_neg_roi_sum*-1  }
+                        ]
+                    }
+                    ]
+                });
+
+                var chart4 = new CanvasJS.Chart("chartContainer4", {
+                    title:{
+                        text: "Win ROI % vs Loss ROI % (Sucess Ratio)"              
+                    },
+                    data: [              
+                    {
+                        // Change type to "doughnut", "line", "splineArea", etc.
+                        type: "column",
+                        dataPoints: [
+                        { label: "Week1",  y: (week1_pos_roi_sum*week1_neg_close_sum)/(week1_pos_close_sum*week1_neg_roi_sum)*-1   },
+                            { label: "Week2", y: (week2_pos_roi_sum*week2_neg_close_sum)/(week2_pos_close_sum*week2_neg_roi_sum)*-1  },
+                            { label: "Week4", y: (week4_pos_roi_sum*week4_neg_close_sum)/(week4_pos_close_sum*week4_neg_roi_sum)*-1 },
+                            { label: "Week8",  y: (week8_pos_roi_sum*week8_neg_close_sum)/(week8_pos_close_sum*week8_neg_roi_sum)*-1},
+                            { label: "Week12",  y: (week12_pos_roi_sum*week12_neg_close_sum)/(week12_pos_close_sum*week12_neg_roi_sum)*-1 },
+                            { label: "Week24",  y:  (week24_pos_roi_sum*week24_neg_close_sum)/(week24_pos_close_sum*week24_neg_roi_sum)*-1 }
+                        ]
+                    }
+                    ]
+                });
+
+                var chart5 = new CanvasJS.Chart("chartContainer5", {
+                    title:{
+                        text: "Significant Parameters"              
+                    },
+                    data: [              
+                    {
+                        // Change type to "doughnut", "line", "splineArea", etc.
+                        type: "column",
+                        dataPoints: [
+                        { label: "TwoHundMovingAverageSum",  y: TwoHundMovingAverageSum },
+                        { label: "TwentyMovingAverageSum",  y: TwentyMovingAverageSum },
+                        { label: "ThreeMonthPercentGainSum",  y: ThreeMonthPercentGainSum },
+                        { label: "StandardDeviationWithMarketSum",  y: StandardDeviationWithMarketSum },
+                        { label: "StandardDeviationSum",  y: StandardDeviationSum },
+                        { label: "PercentageLagSum",  y: PercentageLagSum },
+                        { label: "OneMonthPercentGainSum",  y: OneMonthPercentGainSum },
+                        { label: "MultipleSum",  y: MultipleSum },
+
+                        { label: "InvestmentRankSum",  y: InvestmentRankSum },
+                        { label: "IndPriceSum",  y: IndPriceSum },
+                        { label: "IndGrowth2Sum",  y: IndGrowth2Sum },
+                        { label: "IndGrowth12Sum",  y: IndGrowth12Sum },
+                        { label: "IndGrowth1Sum",  y: IndGrowth1Sum },
+                        { label: "FourWeekLowSum",  y: FourWeekLowSum },
+                        { label: "FourWeekHighSum",  y: FourWeekHighSum },
+                        { label: "FiftyMovingAverageSum",  y: FiftyMovingAverageSum },
+
+                        { label: "Fifty2WeekLowSum",  y: Fifty2WeekLowSum },
+                        { label: "Fifty2WeekHighSum",  y: Fifty2WeekHighSum },
+                        { label: "Fifty2WeekChangeSum",  y: Fifty2WeekChangeSum },
+                        { label: "AvgVol3MonthsSum",  y: AvgVol3MonthsSum },
+                        { label: "AvgVol1MonthSum",  y: AvgVol1MonthSum },
+                        { label: "AvgVol10DaysSum",  y: AvgVol10DaysSum },
+                            
+                        ]
+                    }
+                    ],
+                    
+                    options: {
+                        scales: {
+                            xAxes: [{
+                                ticks: {
+                                    autoSkip: false,
+                                    maxRotation: 90,
+                                    minRotation: 90
+                                }
+                            }]
+                        }
+                    }
+                });
+
+
+
+                
+                chart1.render();
+                chart2.render();
+                chart3.render();
+                chart4.render();
+                chart5.render();
+            
+            }
+
+            
+        
+    </script>
+  
+</body>
+</html>

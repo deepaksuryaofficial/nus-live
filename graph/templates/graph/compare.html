@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-uWxY/CJNBR+1zjPWmfnSnVxwRheevXITnMqoEIeG1LJrdI0GlVs/9cVSyPYXdcSF" crossorigin="anonymous">
+
+<script>
+    window.onload = function () {
+
+var chart = new CanvasJS.Chart("chartContainer", {
+	animationEnabled: true,
+	title:{
+		text: ""
+	},	
+	axisY: {
+		title: "ROI return for sector {{ filteroption1 }}",
+		titleFontColor: "#4F81BC",
+		lineColor: "#4F81BC",
+		labelFontColor: "#4F81BC",
+		tickColor: "#4F81BC"
+	},
+	axisY2: {
+		title: "ROI return for sector {{ filteroption2 }}",
+		titleFontColor: "#C0504E",
+		lineColor: "#C0504E",
+		labelFontColor: "#C0504E",
+		tickColor: "#C0504E"
+	},	
+	toolTip: {
+		shared: true
+	},
+	legend: {
+		cursor:"pointer",
+		itemclick: toggleDataSeries
+	},
+
+    data: [{
+		type: "column",
+		name: "ROI Returns for {{ filteroption1 }} in $ ",
+		legendText: "{{ filteroption1 }}",
+		showInLegend: true, 
+		dataPoints:[
+			{ label: "week1", y:{{c1w1roilistsum}} },
+			{ label: "week2", y: {{c1w2roilistsum}}  },
+			{ label: "week4", y: {{c1w4roilistsum}}  },
+			{ label: "week8", y: {{c1w8roilistsum}}  },
+			{ label: "week12", y: {{c1w12roilistsum}}  },
+			{ label: "week24", y: {{c1w24roilistsum}}  }
+		]
+	},
+	{
+		type: "column",	
+		name: "ROI Returns for {{ filteroption2 }} in $",
+		legendText: "{{ filteroption2 }}",
+		axisYType: "secondary",
+		showInLegend: true,
+		dataPoints:[
+			{ label: "week1", y: {{c2w1roilistsum}}  },
+			{ label: "week2", y: {{c2w2roilistsum}}  },
+			{ label: "week4", y: {{c2w4roilistsum}}  },
+			{ label: "week8", y: {{c2w8roilistsum}}  },
+			{ label: "week12", y: {{c2w12roilistsum}}  },
+			{ label: "week24", y: {{c2w24roilistsum}}  }
+		]
+	}]
+
+    
+});
+
+chart.render();
+
+function toggleDataSeries(e) {
+	if (typeof(e.dataSeries.visible) === "undefined" || e.dataSeries.visible) {
+		e.dataSeries.visible = false;
+	}
+	else {
+		e.dataSeries.visible = true;
+	}
+	chart.render();
+}
+
+}
+</script>
+
+</head>
+<body>
+    <nav class="navbar navbar-dark bg-dark">
+		<div class="container">
+		  <a class="navbar-brand">Aussie Stock Trader</a>
+		  <form class="d-flex">
+			<input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+		  </form>
+		</div>
+	  </nav>     
+
+    <div class="container">
+        <div id="radio" style="margin-top: 10px;">
+            <input type="radio" id="topstockyear" name="weekoryear" value="Year" onclick="chooseTimeperiod()" >
+            <label for="timeperiod">Compare by Timeperiod</label><br>
+            <input type="radio" id="topstockweek" name="weekoryear" value="Week" onclick="chooseCategory()">
+            <label for="category">Compare by Sector</label><br>			     
+        </div>
+    </div>
+    <hr class="my-4">
+
+
+    <div class="container">
+        <div id="category" style="display: none;">
+            <h5>Compare by Sector</h5>
+            <div class="row">
+                <form action="{% url 'compare' %}">
+                <div class="col">                   
+                <select name="category1" class="form-select" aria-label="Default select example" style="margin-top: 20px;">
+                    <option value="choose" selected>Choose the Sector 1</option>
+                    <option value="Consumer Discretionary">Consumer Discretionary</option>
+                    <option value="Consumer Staple">Consumer Staple </option>
+                    <option value="Energy">Energy</option>
+                    <option value="Finance">Finance</option>
+                    <option value="Consumer Staple">Consumer Staple </option>
+                    <option value="Healthcare">Healthcare</option>
+                    <option value="Industrial">Industrial</option>
+                    <option value="Information Technology">Information Technology </option>
+                    <option value="Material">Material</option>
+                    <option value="Medium Cap">Medium Cap</option>
+                    <option value="Small Cap">Small Cap </option>
+                    <option value="Telecommunication">Telecommunication</option>
+                    <option value="Utilities">Utilities</option>  
+                    
+                </select>
+                </div>
+                <div class="col">
+
+                <select name="category2" class="form-select" aria-label="Default select example" style="margin-top: 20px;">
+                    <option value="choose"  selected>Choose the Sector 2</option>
+                    <option value="Consumer Discretionary">Consumer Discretionary</option>
+                    <option value="Consumer Staple">Consumer Staple </option>
+                    <option value="Energy">Energy</option>
+                    <option value="Finance">Finance</option>
+                    <option value="Consumer Staple">Consumer Staple </option>
+                    <option value="Healthcare">Healthcare</option>
+                    <option value="Industrial">Industrial</option>
+                    <option value="Information Technology">Information Technology </option>
+                    <option value="Material">Material</option>
+                    <option value="Medium Cap">Medium Cap</option>
+                    <option value="Small Cap">Small Cap </option>
+                    <option value="Telecommunication">Telecommunication</option>
+                    <option value="Utilities">Utilities</option>  
+                    
+                </select>
+                </div>
+            </div>
+            <div style="text-align: center; margin-top: 10px;" >
+                <button type="submit" class="btn btn-dark">Compare</button>
+            </div>
+            <hr class="my-4">  
+              
+    </div>
+    
+    </div>
+
+    <div id="timeperiod" style="display: none;">
+        <div class="container" >
+            <h5>Compare Timeperiod </h5>
+            <div id="radio" style="margin-top: 10px;">
+                <input type="radio" id="topstockyear" name="weekoryear" value="Year" onclick="chooseTimeperiodYear()">
+                <label for="timeperiodyear">Compare by Year</label><br>
+                <input type="radio" id="topstockweek" name="weekoryear" value="Week" onclick="chooseTimeperiodWeek()" >
+                <label for="timeperiodweek">Compare by Week</label><br>			     
+            </div>
+
+            <div id="timeperiodyear" style="display: none;">
+                <div class="row">
+                    <div class="col">
+                       
+                    <select name="year1" class="form-select" aria-label="Default select example" style="margin-top: 20px;">
+                        <option value= "choose" selected> Choose Year 1</option>
+                        <option value="2020">2020</option>
+                        <option value="2021">2021 </option>
+                          
+                        
+                    </select>
+                    </div>
+                    <div class="col">
+    
+                    <select name="year2" class="form-select" aria-label="Default select example" style="margin-top: 20px;">
+                        <option value= "choose" selected>Choose Year 2</option>
+                        <option value="2020">2020</option>
+                        <option value="2021">2021 </option>
+                          
+                    </select>
+                    </div>
+                </div>
+            </div>
+
+            <div id="timeperiodweek" style="display: none;">
+                <div class="row">
+                    <div class="col">
+                       
+                    <select name="week1" class="form-select" aria-label="Default select example" style="margin-top: 20px;">
+                        <option value= "choose" selected>Choose Week 1</option>
+                        {% for item in dates%}
+                        <option value="{{item}}">{{item}}</option>
+                        {%endfor%}
+
+                    </select>
+                    </div>
+                    <div class="col">
+    
+                    <select name="week2" class="form-select" aria-label="Default select example" style="margin-top: 20px;">
+                        <option value= "choose" selected>Choose Week 2</option>
+                        {% for item in dates%}
+                        <option value="{{item}}">{{item}}</option>
+                        {%endfor%}
+
+                    </select>
+                    </div>
+                </div>
+
+            </div>
+            <div style="text-align: center; margin-top: 10px;" >
+                <button type="submit" class="btn btn-dark">Compare</button>
+            </div>
+        </div>
+        <hr class="my-4">  
+
+    </div>  
+    <div class="container">
+        <div style="text-align: center;">
+            <h4>ROI return for sectors {{  filteroption1 }} & {{  filteroption2 }}</h4>
+        </div>
+        <div id="chartContainer" style="height: 370px; "></div>
+
+    </div>
+
+
+<script>
+    function chooseTimeperiod(){
+        document.getElementById("timeperiod").style.display="block";
+        document.getElementById("category").style.display="none";
+            }
+    function chooseCategory(){
+        document.getElementById("category").style.display="block";
+        document.getElementById("timeperiod").style.display="none";
+    }
+    function chooseTimeperiodYear(){
+        document.getElementById("timeperiodyear").style.display="block";
+        document.getElementById("timeperiodweek").style.display="none";
+            }
+    function chooseTimeperiodWeek(){
+        document.getElementById("timeperiodyear").style.display="none";
+        document.getElementById("timeperiodweek").style.display="block";
+    }
+</script>    
+<script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
+</body>
+</html>
